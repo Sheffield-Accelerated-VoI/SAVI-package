@@ -1,0 +1,19 @@
+Package: SAVI
+Type: Package
+Title: SAVI Sheffield Accelerated Value of Information
+Version: 0.9
+Authors@R: c(person(given = "Mark", family = "Strong", role =
+        c("aut", "cre"), email = "m.strong@sheffield.ac.uk"),
+        person(given = "Penny", family = "Breeze", role = "ctb", email
+        = "p.breeze@sheffield.ac.uk"), person(given = "Chloe", family =
+        "Thomas", role = "ctb", email = "c.thomas@sheffield.ac.uk"),
+        person(given = "Alan", family = "Brennan", role = "ctb", email
+        = "a.brennan@sheffield.ac.uk"))
+Date: 2015-09-15
+Maintainer: Mark Strong <m.strong@sheffield.ac.uk>
+URL: http://savi.shef.ac.uk/SAVI/
+Description: This package deploys a Shiny App to calculate value of information from a PSA sample.
+License: BSD_3_clause + file LICENSE
+Depends: R (>= 3.0.0)
+Imports: shiny, rmarkdown
+NeedsCompilation: no
