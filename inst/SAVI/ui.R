@@ -33,9 +33,7 @@ fluidPage(
   headerPanel(HTML("<a href='http://www.sheffield.ac.uk/'
                     target='_blank'><img src = 'uni2.gif' width = '200'
                    alt='University of Sheffield logo' /></a>
-                    SAVI - Sheffield Accelerated Value of Information <a href='http://www.nihr.ac.uk/'
-                    target='_blank'><img src = 'NIHR-stamp-fund.png' width = '100'
-                   alt='Funded by National Institute for Health Research' /></a>")),
+                    SAVI - Sheffield Accelerated Value of Information")),
 
   mainPanel(
     h4("SAVI package version 0.9 - based on release version 2.0.9 (2015-08-11)"),
@@ -788,14 +786,17 @@ fluidPage(
           target='_top'> savi@sheffield.ac.uk</a>")),
        p("Please tell us about any bugs!"),
        br(),
-       h3("Acknowledgements"),
+       h3(HTML("Acknowledgements <a href='http://www.nihr.ac.uk/'
+          target='_blank'><img src = 'NIHR-stamp-fund.png' width = '100'
+          alt='Funded by National Institute for Health Research' /></a>")),
        p(HTML("The method for partial EVPI computation that is implemented in
               this web application arose from independent research
               supported by the National Institute for Health Research (Mark Strong,
               postdoctoral fellowship PDF-2012-05-258).
               The views expressed in this publication are those
               of the authors and not necessarily those of the National Health Service,
-              the National Institute for Health Research, or the Department of Health. ")),
+              the National Institute for Health Research, or the Department of Health.
+              ")),
 
        br(),
        p(HTML("This website complies with The University of Sheffield's
