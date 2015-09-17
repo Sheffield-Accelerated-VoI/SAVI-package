@@ -714,27 +714,16 @@ fluidPage(
       # REPORT TAB #
       #################
 
-#       tabPanel("Report",
-#          h3(HTML("The report feature requires"),
-#           a("Pandoc", href='http://pandoc.org/'), HTML("to be installed")),
-#          h3("Download summary report"),
-#          p("This document contains all the tables and figures generated from the
-#            SAVI analysis of your PSA."),
-#          radioButtons('format', 'Please select the document format you require',
-#                       c('HTML', 'Word'),
-#                       inline = TRUE),
-#          downloadButton('downloadReport', 'Download summary report'),
-#          br(), br(),
-#          p("NB generating the document can take some time.")
-#       ),
 
 
-tabPanel("Report",
+
+      tabPanel("Report",
          conditionalPanel(condition = "output.pandoc == 0",
                           p(),
                           h3(HTML("The report feature requires <strong>Pandoc</strong> to be installed.")),
                           p(HTML("You can download Pandoc from "),
-                             a("http://pandoc.org/", href='http://pandoc.org/', target='_blank'))),
+                             a("http://pandoc.org/", href='http://pandoc.org/', target='_blank'))
+          ),
 
          conditionalPanel(condition = "output.pandoc == 1",
                           h3("Download summary report"),
@@ -746,25 +735,8 @@ tabPanel("Report",
                           downloadButton('downloadReport', 'Download summary report'),
                           br(), br(),
                           p("NB generating the document can take some time.")
-         )),
-
-
-
-
-
-
-      ####################
-      # SAVE SESSION TAB #
-      ####################
-
-#      CURRENTLY OUT OF ACTION
-
-#       tabPanel("Save session",
-#          textInput("RdataFileName", strong("Filename"), value="SAVISession.Rdata"),
-#          br(), br(),
-#          downloadButton('saveSession', 'Save SAVI session')
-#       ),
-
+         )
+      ),
 
 
 
@@ -801,8 +773,8 @@ tabPanel("Report",
               and <a href='https://www.sheffield.ac.uk/scharr/sections/heds/staff/brennan_a'
               target='_blank'>Alan Brennan</a>.")),
        p(HTML("The source code is available on GitHub at
-        <a href = 'https://github.com/Sheffield-Accelerated-VoI/SAVI'
-              target='_blank'>https://github.com/Sheffield-Accelerated-VoI/SAVI.</a>")),
+        <a href = 'https://github.com/Sheffield-Accelerated-VoI/SAVI-package'
+              target='_blank'>https://github.com/Sheffield-Accelerated-VoI/SAVI-package.</a>")),
        p(HTML("Please cite the method as")),
        p(HTML("<div style='border:1px solid
               black;width:67%;padding-left: 1em'>Strong M, Oakley JE, Brennan A.
