@@ -18,7 +18,7 @@ rm(list=ls())
 
 
 # max upload for files
-options(shiny.maxRequestSize=1024*1024^2) # Max upload 1Gb
+options(shiny.maxRequestSize=512*1024^2) # Max upload 1/2 Gb
 
 # debugging option. Only set to true for debugging. MUST BE FALSE FOR LIVE USE
 options(shiny.reactlog=FALSE)
@@ -29,8 +29,7 @@ library(mgcv)
 library(knitr)
 library(rmarkdown)
 library(xtable)
-#library(earth)
-#library(parallel)
+
 
 # source all the functions we need
 source("scripts.R")
@@ -40,7 +39,6 @@ source("scripts_plots.R")
 source("scripts_tables.R")
 source("scripts_text.R")
 source("scripts_GAMBasedIndivAvefunctions.R")
-# source("scripts_IndivAvefunctions.R")
 
 
 ###########################
@@ -49,11 +47,8 @@ source("scripts_GAMBasedIndivAvefunctions.R")
 # to try out the app      #
 ###########################
 
-print(dim(SAVILocal:::testParams))
+# contained in sysdata.rda
 
-#testParams <- as.matrix(read.csv("extdata/parameters.csv"))
-#testCosts <- as.matrix(read.csv("extdata/costs_2d.csv"))
-#testEffects <- as.matrix(read.csv("extdata/effects_2d.csv"))
 
 
 ###################
@@ -151,66 +146,7 @@ shinyServer(
 
 
 
-
-
-
-
-
-
-
-
     ################################## TABS BELOW #########################################
-
-
-    ############
-    # HOME TAB #
-    ############
-
-    # Function that LOADS SAVED SESSION
-    # is evaluated if a new session is loaded
-
-    # CURRENTLY OUT OF ACTION
-
-#     observe({
-#       inFile = input$loadSession
-#       if (is.null(inFile)) return(NULL)
-#       load(inFile$datapath, envir=cache)
-#
-#       # update "about the model" variables
-#       updateTextInput(session, "modelName", value = cache$modelName)
-#       updateTextInput(session, "current",  value = cache$current)
-#       updateTextInput(session, "t3",  value = cache$t3)
-#       updateNumericInput(session, "lambdaOverall",  value = cache$lambdaOverall)
-#       updateTextInput(session, "effectDef",  value = cache$effectDef)
-#       updateTextInput(session, "costDef",  value = cache$costDef)
-#       updateNumericInput(session, "annualPrev",  value = cache$annualPrev)
-#       updateNumericInput(session, "horizon",  value = cache$horizon)
-#       updateTextInput(session, "currency",  value = cache$currency)
-#       updateTextInput(session, "unitBens",  value = cache$unitBens)
-#       updateTextInput(session, "jurisdiction",  value = cache$jurisdiction)
-#       updateTextInput(session, "indSim",  value = cache$indSim)
-#
-#       # set the group EVPI objects to NULL / 0
-#       cache$counterAdd <- 0
-#       cache$setStore <- vector("list", 100) # up to 100 sets for the group inputs
-#       cache$subsetEvpiValues <- NULL
-#       cache$setStoreMatchEvpiValues <- NULL
-#       cache$currentSelection <- NULL
-#
-#       cache$namesDecisions <- paste(1:ncol(cache$costs), ") ",
-#                                     colnames(cache$costs), sep="") # defines the decision option names
-#
-#       if(is.null(cache$uploadedCosts)) {
-#         cache$uploadedCosts <- cache$costs
-#         cache$uploadedEffects <- cache$effects
-#       }
-#
-#
-#     })
-
-
-
-
 
 
 
@@ -1284,27 +1220,6 @@ shinyServer(
 
 
 
-
-
-
-
-
-
-
-
-    ####################
-    # SAVE SESSION TAB #
-    ####################
-
-    # CURRENTLY OUT OF ACTIONS
-
-    # Download .Rdata file
-#     output$saveSession <- downloadHandler(
-#       filename =  function() paste(input$RdataFileName),
-#       content = function(file) {
-#         save(list = ls(envir=cache), file = file, envir=cache)
-#       },
-#       contentType = "text/plain")
 
 
 
