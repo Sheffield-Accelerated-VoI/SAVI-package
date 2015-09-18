@@ -720,7 +720,8 @@ fluidPage(
                           p(),
                           h3(HTML("The report feature requires <strong>Pandoc</strong> to be installed.")),
                           p(HTML("You can download Pandoc from "),
-                             a("http://pandoc.org/", href='http://pandoc.org/', target='_blank'))
+                             a("http://pandoc.org/", href='http://pandoc.org/', target='_blank')),
+                          p("Windows users please restart your computer after installing Pandoc.")
           ),
 
          conditionalPanel(condition = "output.pandoc == 1",
