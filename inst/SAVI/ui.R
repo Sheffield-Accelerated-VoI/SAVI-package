@@ -782,13 +782,11 @@ fluidPage(
           <em>Medical Decision Making.</em> 2014;<b>34(3)</b>:311-26. Available open access
               <a href='http://mdm.sagepub.com/content/34/3/311' target='_blank'>here.</a></div>")),
        br(),h3("Contact us"),
-       p(HTML("Please email us at <a href='mailto:savi@sheffield.ac.uk?Subject=SAVI%20query'
+       p(HTML("Please email us at <a href='mailto:savi@sheffield.ac.uk?Subject=SAVI-package%20query'
           target='_top'> savi@sheffield.ac.uk</a>")),
        p("Please tell us about any bugs!"),
        br(),
-       h3(HTML("Acknowledgements <a href='http://www.nihr.ac.uk/'
-          target='_blank'><img src = 'NIHR-stamp-fund.png' width = '100'
-          alt='Funded by National Institute for Health Research' /></a>")),
+       h3(HTML("Acknowledgements")),
        p(HTML("The method for partial EVPI computation that is implemented in
               this web application arose from independent research
               supported by the National Institute for Health Research (Mark Strong,
