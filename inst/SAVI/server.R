@@ -333,7 +333,7 @@ shinyServer(
     output$testParams <- downloadHandler(
       filename = "parameters.csv",
       content = function(file) {
-        write.csv(SAVILocal:::testParams, file, row.names = FALSE)
+        write.csv(SAVI:::testParams, file, row.names = FALSE)
       },
       contentType = "text/plain"
     )
@@ -341,7 +341,7 @@ shinyServer(
     output$testCosts <- downloadHandler(
       filename = "costs.csv",
       content = function(file) {
-        write.csv(SAVILocal:::testCosts, file, row.names = FALSE)
+        write.csv(SAVI:::testCosts, file, row.names = FALSE)
       },
       contentType = "text/plain"
     )
@@ -349,7 +349,7 @@ shinyServer(
     output$testEffects <- downloadHandler(
       filename = "effects.csv",
       content = function(file) {
-        write.csv(SAVILocal:::testEffects, file, row.names = FALSE)
+        write.csv(SAVI:::testEffects, file, row.names = FALSE)
       },
       contentType = "text/plain"
     )
