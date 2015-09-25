@@ -9,10 +9,10 @@
 #   incCost <- (costs[, 2] - costs[, 1])
 #   incCost
 # }
-# 
+#
 # # 2) Incremental effects
 # incBen <- function (effects){
-#   incBen <- (effects[, 2] - effects[, 1])  
+#   incBen <- (effects[, 2] - effects[, 1])
 #   incBen
 # }
 
@@ -104,7 +104,7 @@ pCE <- function(int, comp, lambda, cache) {
   comp <- which(cache$namesDecisions%in%comp)
   if(int==comp) return(NULL)
   costs <- cache$costs
-  effects <- cache$effects 
+  effects <- cache$effects
   sum((effects[, int] * lambda - costs[, int]) > (effects[, comp] * lambda - costs[, comp])) / NROW(costs)
 }
 
