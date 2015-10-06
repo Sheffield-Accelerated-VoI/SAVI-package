@@ -335,7 +335,7 @@ shinyServer(
       content = function(file) {
         write.csv(SAVI:::testParams, file, row.names = FALSE)
       },
-      contentType = "text/plain"
+      contentType = "text/csv"
     )
 
     output$testCosts <- downloadHandler(
@@ -343,7 +343,7 @@ shinyServer(
       content = function(file) {
         write.csv(SAVI:::testCosts, file, row.names = FALSE)
       },
-      contentType = "text/plain"
+      contentType = "text/csv"
     )
 
     output$testEffects <- downloadHandler(
@@ -351,7 +351,7 @@ shinyServer(
       content = function(file) {
         write.csv(SAVI:::testEffects, file, row.names = FALSE)
       },
-      contentType = "text/plain"
+      contentType = "text/csv"
     )
 
 
