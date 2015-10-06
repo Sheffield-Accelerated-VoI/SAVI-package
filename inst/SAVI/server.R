@@ -614,7 +614,7 @@ shinyServer(
         }
         write.csv(tableOut, file, row.names = FALSE)
       },
-      contentType = "text/plain"
+      contentType = "text/csv"
     )
 
 
@@ -731,7 +731,7 @@ shinyServer(
         }
         write.csv(tableOut, file, row.names = FALSE)
       },
-      contentType = "text/plain"
+      contentType = "text/csv"
     )
 
     # EVPI INB bar plot
@@ -889,7 +889,7 @@ shinyServer(
         tableOut <- cache$tableEVPI
         write.csv(tableOut, file)#, row.names = FALSE)
       },
-      contentType = "text/plain"
+      contentType = "text/csv"
     )
 
 
@@ -999,7 +999,7 @@ shinyServer(
       content = function(file) {
         write.csv(cache$tableEVPPI, file)
       },
-    contentType = "text/plain"
+    contentType = "text/csv"
     )
 
 
@@ -1129,7 +1129,7 @@ shinyServer(
         }
         write.csv(contents, file)
       },
-      contentType = "text/plain"
+      contentType = "text/csv"
     )
 
 
