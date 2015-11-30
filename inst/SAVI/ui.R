@@ -36,7 +36,7 @@ fluidPage(
                     SAVI - Sheffield Accelerated Value of Information")),
 
   mainPanel(
-    h4("SAVI package version 2.0.10 (2015-09-24)"),
+    h4("SAVI package version 2.0.14 (2015-11-30)"),
     h6(HTML("Copyright &copy; 2015 University of Sheffield")),
 
 
@@ -71,22 +71,11 @@ fluidPage(
               fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>")),
             br(),
 
-            h3("Known issues"),
-            p("Sometimes SAVI will either not load, or will hang for a while.
-              This is because SAVI can only deal with one set of computations at a time,
-              even though SAVI allows multiple concurrent users.
-              Be assurred that SAVI keeps concurrent users' data and results separate."),
-            p("The \"Save session\" and \"Load previously saved session\"
-              facilities are temporarily out of action due to problems of backward compatibility
-              with SAVI version 1."),
-            p("The report that SAVI generates is not quite as polished as we would like. We are working on this."),
-            br(),
-
             h3("New features and bug fixes"),
             strong("Fix for version 2.0.9"),
             p("We have added a note on the EVPPI Groups tab to say that the GP method for
               calculating partial EVPI for groups of five or more parameters uses only the first
-              5,000 rows of the PSA."),
+              7,500 rows of the PSA."),
             strong("Fix for version 2.0.5"),
             p("We have found that, for individual level simulation models, the regression method works best
               when a small number of individuals (rather than a single individual) are run per PSA sample.
@@ -105,7 +94,25 @@ fluidPage(
             p("You can now download a report containing all the results from the
               SAVI analysis. Click on the Downloads tab."),
             p("Different interventions and comparators can now be specified for the CE plane."),
+            br(),
+
+            h3("Known issues"),
+            p("We've removed the individual-level patient simulation model tick-box option
+                while we upgrade the code. The new implimentation will improve speed and accuracy.
+              SAVI still works for your patient-level simulation model,
+                but we assume that the model has been run with a sufficient number
+                of patients per PSA sample such that the mean costs and effects are stable."),
+            p("Sometimes SAVI will either not load, or will hang for a while.
+              This is because SAVI can only deal with one set of computations at a time,
+              even though SAVI allows multiple concurrent users.
+              Be assurred that SAVI keeps concurrent users' data and results separate."),
+            p("The \"Save session\" and \"Load previously saved session\"
+              facilities are temporarily out of action due to problems of backward compatibility
+              with SAVI version 1."),
+            p("The report that SAVI generates is not quite as polished as we would like.
+              We are working on this."),
             br()
+
           ),
 
 
@@ -120,17 +127,19 @@ fluidPage(
              tags$li("Expected Value of Perfect Parameter Information (EVPPI)
                      for single and groups of parameters")
             ),
-            p("For individual-level simulation models you only need to simulate
-                   a small number of individuals per PSA sample.
-              See the \"About your model\" tab."),
+            #p("For individual-level simulation models you only need to simulate
+            #       a small number of individuals per PSA sample.
+            #  See the \"About your model\" tab."),
 
             br(),
             p(HTML("Disclaimer: This application is based on peer-reviewed
                 statistical approximation methods.
-              It comes with no warranty and should be utilised at the user\'s own risk.
+              It comes with no warranty and should be utilised at the user\'s own risk
+                (see <a href = 'https://raw.githubusercontent.com/Sheffield-Accelerated-VoI/SAVI/master/DISCLAIMER.txt'
+              target = '_blank'>here</a>).
               The <a href = 'https://github.com/Sheffield-Accelerated-VoI/SAVI'
                 target='_blank'>underlying code</a> is made available under the
-              <a href = 'https://github.com/Sheffield-Accelerated-VoI/SAVI/blob/master/LICENSE.txt'
+              <a href = 'https://raw.githubusercontent.com/Sheffield-Accelerated-VoI/SAVI/master/LICENSE.txt'
                    target = '_blank'>BSD 3-clause license</a>.")),
             p(HTML("For more information on the method see
               <a href='http://www.sheffield.ac.uk/scharr/sections/ph/staff/profiles/mark'
@@ -138,7 +147,7 @@ fluidPage(
               <a href = 'http://mdm.sagepub.com/content/34/3/311' target='_blank'>this paper</a>.")), br(),
             p(HTML("The SAVI process has 4 steps (using the TABS from left to right)")),
             p(HTML("Step 1: Save PSA input parametes, costs and effects as separate .csv files")),
-              img(src = "step1_excel.png", style = "width:50%"),
+            img(src = "step1_excel.png", style = "width:50%"),
             br(),
             br(),
             p(HTML("Step 2: Input details about your model, then upload and check PSA samples")),
@@ -177,41 +186,41 @@ fluidPage(
       ########################
 
       tabPanel("About your model",
-       sidebarLayout(position = "right",
-         sidebarPanel(
-           h3("Individual level simulation models"),
-           h4("This box is relevant if your model is an individual level simulation model."),
-           br(),
-           p(HTML("If individuals within a simulation model are independent
-            (conditional on the PSA parameters) then the optimum number of
-            individuals to simulate per sample of the PSA parameters is <strong>1</strong>.
-            This will lead to the most efficient (lowest variance) estimators for the
-            mean costs, mean effects and mean net benefits (O\'Hagan et al., 2007)." )),
-           p("However, by simulating only a single patient per PSA sample we cannot
-             calculate the overall EVPI, or construct the Cost-Effectiveness Plane
-             or CEAC using standard methods."),
-           p("We first need to partition the variation in the costs and effects
-             into variation caused by individual level variation, and variation
-             caused by PSA level variation."),
-           p("We can do this using non-parametric regression. The regression works best
-             when a small number of patients are run per PSA sample,
-              rather than just a single patient. We recommend at least 30."),
-           p("In SAVI, if \"Yes\" is selected below, an additive GAM
-              model is used to separate the sources of variation. The
-              GAM model fitted values are approximately equal to the values that would
-              have been obtained had a large number of individuals been sampled per PSA run."),
-           p("The overall EVPI, the CE Plane, and the CEAC are then generated using
-             these GAM fitted values."),
-           p(),
-           radioButtons("indSim", label = h4("Is the model an individual level
-            simulation with a small number of patients per PSA run?"),
-                        choices = c("No", "Yes"), inline=TRUE),
-           br(),
-           p(HTML("<small>O\'Hagan et al. (2007) Health Economics. 16: 1009-23</small>"))
-           , width = 5),
-
-
-         mainPanel(
+#        sidebarLayout(position = "right",
+#          sidebarPanel(
+#            h3("Individual level simulation models"),
+#            h4("This box is relevant if your model is an individual level simulation model."),
+#            br(),
+#            p(HTML("If individuals within a simulation model are independent
+#             (conditional on the PSA parameters) then the optimum number of
+#             individuals to simulate per sample of the PSA parameters is <strong>1</strong>.
+#             This will lead to the most efficient (lowest variance) estimators for the
+#             mean costs, mean effects and mean net benefits (O\'Hagan et al., 2007)." )),
+#            p("However, by simulating only a single patient per PSA sample we cannot
+#              calculate the overall EVPI, or construct the Cost-Effectiveness Plane
+#              or CEAC using standard methods."),
+#            p("We first need to partition the variation in the costs and effects
+#              into variation caused by individual level variation, and variation
+#              caused by PSA level variation."),
+#            p("We can do this using non-parametric regression. The regression works best
+#              when a small number of patients are run per PSA sample,
+#               rather than just a single patient. We recommend at least 30."),
+#            p("In SAVI, if \"Yes\" is selected below, an additive GAM
+#               model is used to separate the sources of variation. The
+#               GAM model fitted values are approximately equal to the values that would
+#               have been obtained had a large number of individuals been sampled per PSA run."),
+#            p("The overall EVPI, the CE Plane, and the CEAC are then generated using
+#              these GAM fitted values."),
+#            p(),
+#            radioButtons("indSim", label = h4("Is the model an individual level
+#             simulation with a small number of patients per PSA run?"),
+#                         choices = c("No", "Yes"), inline=TRUE),
+#            br(),
+#            p(HTML("<small>O\'Hagan et al. (2007) Health Economics. 16: 1009-23</small>"))
+#            , width = 5),
+#
+#
+#          mainPanel(
            h3("Specify details about your model here"),
            h5("These can changed at any time - results will automatically update"),
            h5("Enter numeric values without a thousand separator comma, i.e. '15100', rather than '15,100'"),
@@ -241,8 +250,8 @@ fluidPage(
            textInput("unitBens", label = h5(strong("Units used for benefits")), value ="QALY"),
            textInput("jurisdiction", label = h5(strong("Name of jurisdiction (e.g. country, region, city)")),
                       value = "England")
-           , width = 7)
-       )
+       #    , width = 7)
+       #)
       ),
 
 
@@ -692,7 +701,7 @@ fluidPage(
           update previously calculated EVPPI values
           when model settings (e.g. lambda) are changed."),
            tags$li("The GP method must invert an n x n matrix where n is the number of
-           rows in the PSA. This is very slow for large matrices, so only the first 7,500
+           rows in the PSA. This is very slow for large matrices, so only the first 5,000
            rows of the PSA are used at present")
          ))
       ),
