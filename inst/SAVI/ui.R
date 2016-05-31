@@ -311,6 +311,7 @@ fluidPage(
            Costs and effects are assumed to be per-person, and to be absolute rather
            than incremental (i.e. there must be
            the same number of columns as decision options, including the baseline decision).<br>
+           Avoid using any special symbols (e.g. currency symbols) in the names.<br>
            <br>
            </div>")),
 
