@@ -23,6 +23,9 @@ options(shiny.maxRequestSize=512*1024^2) # Max upload 1/2 Gb
 # debugging option. Only set to true for debugging. MUST BE FALSE FOR LIVE USE
 options(shiny.reactlog=FALSE)
 
+# old style progress bar - required since shiny v 0.14
+shinyOptions(progress.style = "old")
+
 # load the libraries we need
 library(MASS)
 library(mgcv)
@@ -382,7 +385,7 @@ shinyServer(
       tableValues <- cache$params
       if (is.null(tableValues)) return(NULL)
       head(tableValues, n=5)
-    })
+    }, rownames = TRUE)
 
     output$checktable2 <- renderTable({
       x <- input$costsFile
@@ -390,7 +393,7 @@ shinyServer(
       tableValues <- cache$costs
       if (is.null(tableValues)) return(NULL)
       head(tableValues, n=5)
-    })
+    }, rownames = TRUE)
 
     output$checktable3 <- renderTable({
       x <- input$effectsFile
@@ -398,7 +401,7 @@ shinyServer(
       tableValues <- cache$effects
       if (is.null(tableValues)) return(NULL)
       head(tableValues, n=5)
-    })
+    }, rownames = TRUE)
 
 
 
@@ -602,7 +605,7 @@ shinyServer(
                                   "Probability that intervention is cost-effective against comparator")
       cache$tableCEplane <- tableCEplane
       tableCEplane
-    })
+    }, rownames = TRUE)
 
     # Download table as a csv file
     output$downloadTableCEplane <- downloadHandler(
@@ -723,7 +726,7 @@ shinyServer(
                                     "95% Upper CI (on Effects Scale)")
       cache$tableNetBenefit <- tableNetBenefit
       tableNetBenefit
-    })
+    }, rownames = TRUE)
 
     # Download table as a csv file
     output$downloadTableNetBenefit <- downloadHandler(
@@ -886,7 +889,7 @@ shinyServer(
       tableEVPI[, 2] <- signif(evpiVector / input$lambdaOverall, 4)
       cache$tableEVPI <- tableEVPI
       tableEVPI
-    }, digits=cbind(rep(0, 7), rep(0, 7), rep(2, 7)))
+    }, rownames = TRUE, digits=cbind(rep(0, 7), rep(0, 7), rep(2, 7)))
 
     output$downloadTableEVPI <- downloadHandler(
       filename = "Overall\ EVPI.csv",
@@ -996,7 +999,7 @@ shinyServer(
       rownames(tableEVPPI) <- colnames(cache$params)
       cache$tableEVPPI <- tableEVPPI
       tableEVPPI
-    })
+    }, rownames = TRUE)
 
     # Download single parameter EVPPI values as csv file
     output$downloadSingleEVPPI <- downloadHandler(
@@ -1113,7 +1116,7 @@ shinyServer(
 
       cache$groupTable <- buildSetStoreTable(setStore[1:counterAdd], subsetEvpiValues, cache)
       cache$groupTable
-    }, sanitize.rownames.function = bold.allrows)
+    }, rownames = TRUE, sanitize.rownames.function = bold.allrows)
 
     # Download group EVPPI values as csv file
     output$downloadGroupEVPPI <- downloadHandler(
