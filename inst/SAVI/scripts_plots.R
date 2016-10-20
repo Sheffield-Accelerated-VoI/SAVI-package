@@ -16,14 +16,14 @@ makeCEPlanePlot <- function(costs.int, effects.int, lambda, intervention, compar
   com <- which(cache$namesDecisions%in%comparator)
   inc_costs <- costs.int[, int] - costs.int[, com]
   inc_effects <- effects.int[, int] - effects.int[, com]
-  
+
   m.costs <- max(abs(inc_costs))
   m.effects <- max(abs(inc_effects))
   m2.effects <- m.costs / lambda
   m2.costs <- m.effects * lambda
   m3.costs <- max(m.costs, m2.costs)
   m3.effects <- max(m.effects, m2.effects)
-  
+
   main <- paste("Standardised Cost-effectiveness Plane per Person\nlambda =", lambda)
   plot(inc_effects, inc_costs, pty="s", cex=0.4, xlab = "Incremental effects", ylab= "Incremental costs",
        ylim=c(-m3.costs, m3.costs), xlim=c(-m3.effects, m3.effects), col="lightblue", ...)
@@ -35,11 +35,11 @@ makeCEPlanePlot <- function(costs.int, effects.int, lambda, intervention, compar
 
 makeCeacPlot <- function(ceac.int, lambda.int, names.int, ...) {
   ## makes the CEAC plot
-  plot(ceac.int$l.seq, ceac.int$p[, 1], type="l", ylim=c(0, 1), , 
-       main="Cost-effectiveness Acceptability Curve", 
-       xlab="Threshold willingness to pay", 
+  plot(ceac.int$l.seq, ceac.int$p[, 1], type="l", ylim=c(0, 1), ,
+       main="Cost-effectiveness Acceptability Curve",
+       xlab="Threshold willingness to pay",
        ylab="Probability strategy is cost-effective", ...)
-  
+
   for (i in 2:ceac.int$d){
     lines(ceac.int$l.seq, ceac.int$p[, i], col = i, lty = i)
   }
@@ -57,16 +57,16 @@ makeInbOptBar <- function(costs.int, effects.int, lambda) {
   lCI <- apply(inbOpt, 2, quantile, 0.025)
   uCI <- apply(inbOpt, 2, quantile, 0.975)
   colnames(inbOpt) <- colnames(nb)
-  mp <- barplot(means, 
-    main = paste("Expected Incremental Net Benefit vs. Optimal Strategy\nOptimal Strategy is Strategy", c), 
+  mp <- barplot(means,
+    main = paste("Expected Incremental Net Benefit vs. Optimal Strategy\nOptimal Strategy is Strategy", c),
                 xlab = "Strategy", ylab = "INB vs. Optimal Strategy", ylim = c(min(lCI), max(uCI)),
-                col=0, border=0, names.arg = 1:length(lCI)) 
+                col=0, border=0, names.arg = 1:length(lCI))
   segments(mp - 0.2, means, mp + 0.2, means, lwd=2)
   segments(mp, lCI, mp, uCI, lwd=2)
   segments(mp - 0.1, lCI, mp + 0.1, lCI, lwd=2)
   segments(mp - 0.1, uCI, mp + 0.1, uCI, lwd=2)
   abline(h=0, lty=2)
-  
+
 }
 
 makeNbDensity <- function (costs.int, effects.int, lambda) {
@@ -80,7 +80,7 @@ makeNbDensity <- function (costs.int, effects.int, lambda) {
     ymax[i]<-max(den$y)
   }
   ymax<-max(ymax)
-  plot(density(nb[, 1]), type = "l", col = 1, xlim = c(xmin, xmax), ylim = c(0, ymax), 
+  plot(density(nb[, 1]), type = "l", col = 1, xlim = c(xmin, xmax), ylim = c(0, ymax),
        xlab="Net Benefit",main="Net Benefit Densities")
   for (i in 2:d){
     lines(density(nb[, i]), col = i, lty = i)
@@ -104,14 +104,14 @@ makeInbOptDens <- function (costs.int, effects.int, lambda) {
     ymax[i] <- max(den$y)
   }
   ymax <- max(ymax)
-  plot(density(inbOpt[, 1]), type = "l", col = 1, xlim = c(xmin, xmax), 
+  plot(density(inbOpt[, 1]), type = "l", col = 1, xlim = c(xmin, xmax),
        ylim = c(0, ymax), xlab="INB vs. Optimal Strategy",
-       main = paste("Incremental Net Benefit Density\nOptimal Strategy is", 
+       main = paste("Incremental Net Benefit Density\nOptimal Strategy is",
                     colnames(costs.int[c])))
   if (d>1) {
     for (i in 2:d){
       lines(density(inbOpt[, i]), col = i, lty = i)
-    }    
+    }
   }
   # Need strategy names adding
   legend("topleft", colnames(inbOpt), col=1:d, lty = 1:d, cex=0.7)
@@ -142,102 +142,115 @@ makeEvpiPlot <- function(costs.int, effects.int, costscale = TRUE, lambda, sessi
   ## makes the overall EVPI plot
   l.seq <- seq(0, lambda * 10, lambda / 5)
   p <- c()
-  
+
   progress <- shiny::Progress$new(session, min=0, max=lambda * 10)
   on.exit(progress$close())
   progress$set(message = 'Calculation in progress',
                detail = 'This may take a while...')
-  
+
   for (lambda.int in l.seq) {
     progress$set(value = lambda.int)
-    
+
     inb.int <- data.frame(as.matrix(effects.int) * lambda.int - as.matrix(costs.int))
 
     evpi <- mean(do.call(pmax, inb.int)) - max(colMeans(inb.int))
     if(!costscale) evpi <- evpi / lambda.int
     p <- c(p, evpi)
-  }  
+  }
   plot(l.seq, p, type="l", xlim = c(0, 10 * lambda), ...)
   abline(v=lambda, lty=2)
   points(lambda, p[which(l.seq == lambda)], pch=20, col="black")
   abline(h=p[which(l.seq == lambda)], lty=2)
 }
 
-makeEvpiPopPlot <- function(costs.int, effects.int, costscale = TRUE, lambda, prevalence, 
+makeEvpiPopPlot <- function(costs.int, effects.int, costscale = TRUE, lambda, prevalence,
                             measure, session) {
   ## makes the overall EVPI plot
   l.seq <- seq(0, lambda * 10, lambda / 5)
   p <- c()
-  
+
   progress <- shiny::Progress$new(session, min=0, max=lambda * 10)
   on.exit(progress$close())
   progress$set(message = 'Calculation in progress',
                detail = 'This may take a while...')
-  
+
   for (lambda.int in l.seq) {
     progress$set(value = lambda.int)
     inb.int <- data.frame(as.matrix(effects.int) * lambda.int - as.matrix(costs.int))
-     
+
     evpi <- (mean(do.call(pmax, inb.int)) - max(colMeans(inb.int))) * prevalence
     if(!costscale) evpi <- evpi / lambda.int
     p <- c(p, evpi)
-  }  
-  plot(l.seq, p, type="l", main = paste("Overall EVPI per annual prevalence ", measure), 
-       xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ", 
+  }
+  plot(l.seq, p, type="l", main = paste("Overall EVPI per annual prevalence ", measure),
+       xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ",
        measure), col="blue")
   abline(v=lambda, lty=2)
   abline(h=p[which(l.seq == lambda)], lty=2)
   points(lambda, p[which(l.seq == lambda)], pch=20, col="black")
 }
 
-makeEvpiHorizonPlot <- function(costs.int, effects.int, costscale = TRUE, lambda, prevalence, 
+makeEvpiHorizonPlot <- function(costs.int, effects.int, costscale = TRUE, lambda, prevalence,
                                 horizon, measure, session) {
   ## makes the overall EVPI plot
   l.seq <- seq(0, lambda * 10, lambda / 5)
   p <- c()
-  
+
   progress <- shiny::Progress$new(session, min=0, max=lambda * 10)
   on.exit(progress$close())
   progress$set(message = 'Calculation in progress',
                detail = 'This may take a while...')
-  
+
   for (lambda.int in l.seq) {
     progress$set(value = lambda.int)
-    
+
     inb.int <- data.frame(as.matrix(effects.int) * lambda.int - as.matrix(costs.int))
 
     evpi <- (mean(do.call(pmax, inb.int)) - max(colMeans(inb.int))) * prevalence * horizon
     if(!costscale) evpi <- evpi / lambda.int
     p <- c(p, evpi)
-  }  
-  plot(l.seq, p, type="l", main = paste("Overall EVPI over decision relevance ", measure), 
-       xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ", 
+  }
+  plot(l.seq, p, type="l", main = paste("Overall EVPI over decision relevance ", measure),
+       xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ",
        measure), col="blue")
   abline(v=lambda, lty=2)
   abline(h=p[which(l.seq == lambda)], lty=2)
   points(lambda, p[which(l.seq == lambda)], pch=20, col="black")
 }
 
-make4wayEvpiPlot <- function(costs.int, effects.int, lambda, prevalence, horizon, measure1, 
+make4wayEvpiPlot <- function(costs.int, effects.int, lambda, prevalence, horizon, measure1,
                              measure2, session) {
   ## makes a four way plot of CE plane, CEAC and EVPI
   opar <- par(mfrow = c(2, 2))
-  makeEvpiPopPlot(costs.int, effects.int, costscale = TRUE, 
+  makeEvpiPopPlot(costs.int, effects.int, costscale = TRUE,
                   lambda, prevalence, measure1, session)
-  
-  makeEvpiPopPlot(costs.int, effects.int, costscale = FALSE, 
+
+  makeEvpiPopPlot(costs.int, effects.int, costscale = FALSE,
                   lambda, prevalence, measure2, session)
-  
-  makeEvpiHorizonPlot(costs.int, effects.int, costscale = TRUE, 
+
+  makeEvpiHorizonPlot(costs.int, effects.int, costscale = TRUE,
                   lambda, prevalence, horizon, measure1, session)
-  
-  makeEvpiHorizonPlot(costs.int, effects.int, costscale = FALSE, 
+
+  makeEvpiHorizonPlot(costs.int, effects.int, costscale = FALSE,
                   lambda, prevalence, horizon, measure2, session)
   on.exit(par(opar))
 }
 
 
 
+############
+# PSUB TAB #
+############
+
+
+makePSUBplot <- function(costs.int, effects.int, lambda) {
+  .nb <- colMeans(effects.int) * lambda - colMeans(costs.int)
+  psbs <- max(.nb) - .nb
+  .evpi <- calcEvpi(costs.int, effects.int, lambda)
+  dataForBarplot <- rbind(.evpi, psbs)
+  colnames(dataForBarplot) <- names(costs.int)
+  barplot(dataForBarplot, col = c(4, 2), beside = FALSE)
+}
 
 
 
@@ -254,7 +267,7 @@ makeEvppiBar <- function(pEVPI.int, params) {
   EVPPI <- matrix(pEVPI.int[order(pEVPI.int)], ncol = length(pEVPI.int), nrow = 1)
   colnames(EVPPI) <- colnames(params[order(pEVPI.int)])
   op <- par(mar = c(5, 15, 4, 2) + 0.1, pty = "m")
-  barplot(EVPPI, horiz = TRUE, cex.names=0.7, las=1, main= "Single parameter Partial EVPI per person", 
-          xlab = "Partial EVPI per person", cex.main=0.9)  
+  barplot(EVPPI, horiz = TRUE, cex.names=0.7, las=1, main= "Single parameter Partial EVPI per person",
+          xlab = "Partial EVPI per person", cex.main=0.9)
   par(op)
 }

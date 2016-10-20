@@ -943,14 +943,49 @@ shinyServer(
 
 
 
+    ############
+    # PSUB TAB #
+    ############
+
+    output$plotsPSUB <- renderPlot({
+      #      dummy <- input$indSim # ensure update with ind sim box tick
+
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
+      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall)
+    })
+
+    output$tablePSUB <- renderTable({
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
+      #      dummy1 <- input$indSim # ensure update with ind sim box tick
+      dummy2 <- input$lambdaOverall
+
+      tableEVPI <- matrix(NA, nrow = 3, ncol = cache$nInt)
+      colnames(tableEVPI) <- cache$namesDecisions
+      rownames(tableEVPI) <- c("Payer Strategy Burdens", "Payer Uncertainty Burdens", "P-SUBS")
+      overallEvpi <- calcEvpi(cache$costs, cache$effects,
+                              lambda=input$lambdaOverall)
+      cache$overallEvpi <- overallEvpi
+      cache$lambdaOverall <- input$lambdaOverall
+      evpiVector <- c(overallEvpi, overallEvpi * input$annualPrev, overallEvpi * input$annualPrev * 5,
+                      overallEvpi * input$annualPrev * 10, overallEvpi * input$annualPrev * 15,
+                      overallEvpi * input$annualPrev * 20,
+                      overallEvpi * input$annualPrev * input$horizon)
+      tableEVPI[, 1] <- signif(evpiVector, 4)
+      tableEVPI[, 2] <- signif(evpiVector / input$lambdaOverall, 4)
+      cache$tableEVPI <- tableEVPI
+      tableEVPI
+    }, rownames = TRUE, digits=cbind(rep(0, 7), rep(0, 7), rep(2, 7)))
 
 
 
-
-
-
-
-
+    output$downloadTablePSUB <- downloadHandler(
+      filename = "PSUB.csv",
+      content = function(file) {
+        tableOut <- cache$tablePSUB
+        write.csv(tableOut, file)#, row.names = FALSE)
+      },
+      contentType = "text/csv"
+    )
 
 
 
