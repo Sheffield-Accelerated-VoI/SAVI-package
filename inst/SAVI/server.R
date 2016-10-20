@@ -965,8 +965,10 @@ shinyServer(
       .nb <- colMeans(createNb(cache$costs, cache$effects, cache$lambdaOverall))
       psb <- as.numeric(max(.nb) - .nb)
 
+      overallEvpi <- calcEvpi(cache$costs, cache$effects, cache$lambdaOverall)
+
       tablePSUB[1, ] <- signif(psb, 4)
-      tablePSUB[2, ] <- signif(cache$overallEvpi, 4)
+      tablePSUB[2, ] <- signif(overallEvpi, 4)
       tablePSUB[3, ] <- signif(psb + cache$overallEvpi, 4)
 
       colnames(tablePSUB) <- cache$namesDecisions
