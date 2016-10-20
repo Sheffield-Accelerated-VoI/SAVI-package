@@ -618,11 +618,13 @@ fluidPage(
 
 tabPanel("P-SUBs",
          h3("Payer Strategy Burdens and Payer Uncertainty Burden"),
-         h4("Table showing Payer Strategy and Uncertainty Burdens"),
+         h4("Table showing Payer Strategy and Uncertainty Burdens relative to optimum"),
          tableOutput("tablePSUB"),
          h4("Download table as a csv file"),
          downloadButton('downloadTablePSUB', 'Download table'),
 
+         br(),
+         br(),
          h4("Barchart showing Payer Strategy and Uncertainty Burdens"),
          plotOutput("plotsPSUB", width="700px", height="600px"),
 

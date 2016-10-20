@@ -959,22 +959,22 @@ shinyServer(
       #      dummy1 <- input$indSim # ensure update with ind sim box tick
       dummy2 <- input$lambdaOverall
 
-      tableEVPI <- matrix(NA, nrow = 3, ncol = cache$nInt)
-      colnames(tableEVPI) <- cache$namesDecisions
-      rownames(tableEVPI) <- c("Payer Strategy Burdens", "Payer Uncertainty Burdens", "P-SUBS")
-      overallEvpi <- calcEvpi(cache$costs, cache$effects,
-                              lambda=input$lambdaOverall)
-      cache$overallEvpi <- overallEvpi
+      tablePSUB <- matrix(NA, nrow = 3, ncol = cache$nInt)
+
       cache$lambdaOverall <- input$lambdaOverall
-      evpiVector <- c(overallEvpi, overallEvpi * input$annualPrev, overallEvpi * input$annualPrev * 5,
-                      overallEvpi * input$annualPrev * 10, overallEvpi * input$annualPrev * 15,
-                      overallEvpi * input$annualPrev * 20,
-                      overallEvpi * input$annualPrev * input$horizon)
-      tableEVPI[, 1] <- signif(evpiVector, 4)
-      tableEVPI[, 2] <- signif(evpiVector / input$lambdaOverall, 4)
-      cache$tableEVPI <- tableEVPI
-      tableEVPI
-    }, rownames = TRUE, digits=cbind(rep(0, 7), rep(0, 7), rep(2, 7)))
+      .nb <- colMeans(createNb(cache$costs, cache$effects, cache$lambdaOverall))
+      psb <- as.numeric(max(.nb) - .nb)
+
+      tablePSUB[1, ] <- signif(psb, 4)
+      tablePSUB[2, ] <- signif(cache$overallEvpi, 4)
+      tablePSUB[3, ] <- signif(psb + cache$overallEvpi, 4)
+
+      colnames(tablePSUB) <- cache$namesDecisions
+      rownames(tablePSUB) <- c("Payer Strategy Burdens", "Payer Uncertainty Burdens", "P-SUBS")
+
+      cache$tablePSUB <- tablePSUB
+      tablePSUB
+    }, rownames = TRUE)
 
 
 
