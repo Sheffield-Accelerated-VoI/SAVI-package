@@ -248,8 +248,10 @@ makePSUBplot <- function(costs.int, effects.int, lambda) {
   psbs <- max(.nb) - .nb
   .evpi <- calcEvpi(costs.int, effects.int, lambda)
   dataForBarplot <- rbind(.evpi, psbs)
+  psubs <- colSums(dataForBarplot)
+  ylimMax <- max(psubs) * 1.2
   colnames(dataForBarplot) <- names(costs.int)
-  barplot(dataForBarplot, col = c(4, 2), beside = FALSE)
+  barplot(dataForBarplot, col = c(4, 2), beside = FALSE, ylim = c(0, ylimMax))
 }
 
 
