@@ -625,9 +625,12 @@ tabPanel("P-SUBs",
 
          br(),
          br(),
-         h4("Barchart showing Payer Strategy and Uncertainty Burdens, relative to the most cost-effective option"),
-         plotOutput("plotsPSUB", width="700px", height="600px"),
-
+         h4("Stacked barchart showing Payer Strategy and Uncertainty Burdens, relative to the most cost-effective option"),
+         plotOutput("plotsPSUBstacked", width="700px", height="600px"),
+         br(),
+         br(),
+         h4("Side-by-side barchart showing Payer Strategy and Uncertainty Burdens, relative to the most cost-effective option"),
+         plotOutput("plotsPSUBsideBySide", width="700px", height="600px"),
          br()
 
 ),

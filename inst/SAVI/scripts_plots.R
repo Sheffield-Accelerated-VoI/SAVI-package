@@ -243,7 +243,7 @@ make4wayEvpiPlot <- function(costs.int, effects.int, lambda, prevalence, horizon
 ############
 
 
-makePSUBplot <- function(costs.int, effects.int, lambda) {
+makePSUBplot <- function(costs.int, effects.int, lambda, ...) {
   .nb <- colMeans(effects.int) * lambda - colMeans(costs.int)
   psbs <- max(.nb) - .nb
   .evpi <- calcEvpi(costs.int, effects.int, lambda)
@@ -251,7 +251,8 @@ makePSUBplot <- function(costs.int, effects.int, lambda) {
   psubs <- colSums(dataForBarplot)
   ylimMax <- max(psubs) * 1.2
   colnames(dataForBarplot) <- names(costs.int)
-  barplot(dataForBarplot, col = c(4, 2), beside = FALSE, ylim = c(0, ylimMax))
+  barplot(dataForBarplot, col = c(4, 2), ylim = c(0, ylimMax), ...)
+  legend("topright", col = c(2, 4), pch=15, c("PSB", "PUB"))
 }
 
 

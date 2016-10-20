@@ -955,13 +955,6 @@ shinyServer(
     # PSUB TAB #
     ############
 
-    output$plotsPSUB <- renderPlot({
-      #      dummy <- input$indSim # ensure update with ind sim box tick
-
-      if (!valuesImportedFLAG(cache, input)) return(NULL)
-      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall)
-    })
-
     output$tablePSUB <- renderTable({
       if (!valuesImportedFLAG(cache, input)) return(NULL)
       #      dummy1 <- input$indSim # ensure update with ind sim box tick
@@ -998,6 +991,17 @@ shinyServer(
     )
 
 
+
+    output$plotsPSUBstacked <- renderPlot({
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
+      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, beside = FALSE)
+    })
+
+
+    output$plotsPSUBsideBySide <- renderPlot({
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
+      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, beside = TRUE)
+    })
 
 
 
