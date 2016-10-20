@@ -93,6 +93,7 @@ shinyServer(
     cache$tableNetBenefit <- NULL
     cache$groupTable <- NULL
     cache$tableEVPI <- NULL
+    cache$tablePSUB <- NULL
     cache$tableEVPPI <- NULL
     cache$ceac.obj <- NULL
 
@@ -943,6 +944,13 @@ shinyServer(
 
 
 
+
+
+
+
+
+
+
     ############
     # PSUB TAB #
     ############
@@ -969,9 +977,9 @@ shinyServer(
 
       tablePSUB[1, ] <- signif(psb, 4)
       tablePSUB[2, ] <- signif(overallEvpi, 4)
-      tablePSUB[3, ] <- signif(psb + cache$overallEvpi, 4)
+      tablePSUB[3, ] <- signif(psb + overallEvpi, 4)
 
-      colnames(tablePSUB) <- cache$namesDecisions
+      colnames(tablePSUB) <- colnames(cache$costs)
       rownames(tablePSUB) <- c("Payer Strategy Burdens", "Payer Uncertainty Burdens", "P-SUBS")
 
       cache$tablePSUB <- tablePSUB
