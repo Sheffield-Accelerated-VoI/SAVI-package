@@ -618,6 +618,16 @@ fluidPage(
 
 tabPanel("P-SUBs",
          h3("Payer Strategy and Uncertainty Burdens"),
+         p("The 'Payer Strategy Burden' (PSB) and 'Payer Uncertainty Burden' (PUB) reflect the payer's financial risks."),
+         p(HTML("The PSB for decision option <em>d</em> is the difference between the expected net benefit of the most
+           cost-effective option, and the expected net benefit of decision option <em>d</em>.
+         The PSB indicates to the Payer the risk of choosing an option that is not the most cost-effective option.")),
+         p("The PUB is equal to the overall Expected Value of Perfect Information. It indicates to the Payer the financial
+           risk of making the decision with current evidence, relative to making the decision with perfect evidence."),
+         p(HTML("The conepts are explained in detail in this
+          <a href = 'http://www.nicedsu.org.uk/Managed-Entry-Agreements-MEA(3026860).htm'
+         target='_blank'>NICE Decision Support Unit Report</a>.")),
+         br(),
          h4("Table showing Payer Strategy and Uncertainty Burdens, relative to the most cost-effective option"),
          tableOutput("tablePSUB"),
          h4("Download table as a csv file"),
