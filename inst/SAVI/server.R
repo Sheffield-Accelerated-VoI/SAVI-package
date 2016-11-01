@@ -93,6 +93,7 @@ shinyServer(
     cache$tableNetBenefit <- NULL
     cache$groupTable <- NULL
     cache$tableEVPI <- NULL
+    cache$tablePSUB <- NULL
     cache$tableEVPPI <- NULL
     cache$ceac.obj <- NULL
 
@@ -950,9 +951,57 @@ shinyServer(
 
 
 
+    ############
+    # PSUB TAB #
+    ############
+
+    output$tablePSUB <- renderTable({
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
+      #      dummy1 <- input$indSim # ensure update with ind sim box tick
+      dummy2 <- input$lambdaOverall
+
+      tablePSUB <- matrix(NA, nrow = 3, ncol = cache$nInt)
+
+      cache$lambdaOverall <- input$lambdaOverall
+      .nb <- colMeans(createNb(cache$costs, cache$effects, cache$lambdaOverall))
+      psb <- as.numeric(max(.nb) - .nb)
+
+      overallEvpi <- calcEvpi(cache$costs, cache$effects, cache$lambdaOverall)
+
+      tablePSUB[1, ] <- signif(psb, 4)
+      tablePSUB[2, ] <- signif(overallEvpi, 4)
+      tablePSUB[3, ] <- signif(psb + overallEvpi, 4)
+
+      colnames(tablePSUB) <- colnames(cache$costs)
+      rownames(tablePSUB) <- c("Payer Strategy Burdens", "Payer Uncertainty Burdens", "P-SUBS")
+
+      cache$tablePSUB <- tablePSUB
+      tablePSUB
+    }, rownames = TRUE)
 
 
 
+    output$downloadTablePSUB <- downloadHandler(
+      filename = "PSUB.csv",
+      content = function(file) {
+        tableOut <- cache$tablePSUB
+        write.csv(tableOut, file)#, row.names = FALSE)
+      },
+      contentType = "text/csv"
+    )
+
+
+
+    output$plotsPSUBstacked <- renderPlot({
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
+      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, beside = FALSE)
+    })
+
+
+    output$plotsPSUBsideBySide <- renderPlot({
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
+      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, beside = TRUE)
+    })
 
 
 
