@@ -248,13 +248,21 @@ makePSUBplot <- function(costs.int, effects.int, lambda, benUnit, beside) {
   psbs <- max(.nb) - .nb
   .evpi <- calcEvpi(costs.int, effects.int, lambda)
   dataForBarplot <- rbind(.evpi, psbs)
+  dataForBarplotHealthUnits <- dataForBarplot / lambda
   psubs <- colSums(dataForBarplot)
   psubsHealth <- psubs / lambda
-  psubsHealthLabel <- paste(format(psubs / lambda, digits=2, nsmall=2), benUnit)
+
+  healthUnitsLabelsStack <- paste(format(psubsHealth, digits=2, nsmall=2), benUnit)
+  healthUnitsLabelsBeside <- paste(format(as.vector(dataForBarplotHealthUnits), digits=2, nsmall=2), benUnit)
+
   ylimMax <- ceiling(max(psubsHealth)) * lambda # max(psubs) * 1.2
   colnames(dataForBarplot) <- names(costs.int)
   x <- barplot(dataForBarplot, col = c(4, 2), ylim = c(0, ylimMax), ylab = "£", beside = beside)
-  if (beside == FALSE) text(x, psubs * 1.3, psubsHealthLabel, cex = 1.2)
+  if (beside) {
+    text(x, as.vector(dataForBarplot) + ylimMax / 20, healthUnitsLabelsBeside, cex = 0.9)
+  } else {
+    text(x, psubs + ylimMax / 20, healthUnitsLabelsStack, cex = 1.1)
+  }
   legend("topright", col = c(2, 4), pch=15, c("PSB", "PUB"))
 }
 
