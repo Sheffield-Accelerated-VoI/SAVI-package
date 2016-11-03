@@ -596,6 +596,7 @@ shinyServer(
                                   "Number of PSA runs",
                                   paste("Mean inc. Effect per Person (", input$unitBens, ")", sep=""),
                                   paste("Mean inc. Cost per Person (", input$currency, ")", sep=""),
+                                  paste("Mean inc. Net Benefit per Person (", input$currency, ")", sep=""),
                                   paste("ICER Estimate (", input$currency, " per ", input$unitBens, ")", sep=""),
                                   paste("2.5th centile for inc. Effects (", input$unitBens, ")", sep=""),
                                   paste("97.5th centile for inc. Effects (", input$unitBens, ")", sep=""),
@@ -994,13 +995,15 @@ shinyServer(
 
     output$plotsPSUBstacked <- renderPlot({
       if (!valuesImportedFLAG(cache, input)) return(NULL)
-      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, beside = FALSE)
+      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, benUnit = input$unitBens,
+                   beside = FALSE)
     })
 
 
     output$plotsPSUBsideBySide <- renderPlot({
       if (!valuesImportedFLAG(cache, input)) return(NULL)
-      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, beside = TRUE)
+      makePSUBplot(cache$costs, cache$effects, lambda=input$lambdaOverall, benUnit = input$unitBens,
+                   beside = TRUE)
     })
 
 

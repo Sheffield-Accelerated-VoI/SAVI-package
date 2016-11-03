@@ -243,15 +243,18 @@ make4wayEvpiPlot <- function(costs.int, effects.int, lambda, prevalence, horizon
 ############
 
 
-makePSUBplot <- function(costs.int, effects.int, lambda, ...) {
+makePSUBplot <- function(costs.int, effects.int, lambda, benUnit, beside) {
   .nb <- colMeans(effects.int) * lambda - colMeans(costs.int)
   psbs <- max(.nb) - .nb
   .evpi <- calcEvpi(costs.int, effects.int, lambda)
   dataForBarplot <- rbind(.evpi, psbs)
   psubs <- colSums(dataForBarplot)
-  ylimMax <- max(psubs) * 1.2
+  psubsHealth <- psubs / lambda
+  psubsHealthLabel <- paste(format(psubs / lambda, digits=2, nsmall=2), benUnit)
+  ylimMax <- ceiling(max(psubsHealth)) * lambda # max(psubs) * 1.2
   colnames(dataForBarplot) <- names(costs.int)
-  barplot(dataForBarplot, col = c(4, 2), ylim = c(0, ylimMax), ...)
+  x <- barplot(dataForBarplot, col = c(4, 2), ylim = c(0, ylimMax), ylab = "£", beside = beside)
+  if (beside == FALSE) text(x, psubs * 1.3, psubsHealthLabel, cex = 1.2)
   legend("topright", col = c(2, 4), pch=15, c("PSB", "PUB"))
 }
 
