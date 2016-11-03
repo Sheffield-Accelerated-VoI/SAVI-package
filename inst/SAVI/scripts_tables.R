@@ -18,7 +18,7 @@ makeTableCePlane <- function(lambda, comparator, cache) {
   inb <- incBen * lambda - incCost
   npsa <- NROW(costs)
 
-  tabCePlane <- matrix(NA, ncol=ncol(costs) - 1, nrow = 14) # incremental, no zero column
+  tabCePlane <- matrix(NA, ncol=ncol(costs) - 1, nrow = 16) # incremental, no zero column
   tabCePlane[1, ]  <- format(lambda, digits=4, nsmall = 0)
   tabCePlane[2, ]  <- colnames(cache$uploadedCosts)[comp]
   tabCePlane[3, ]  <- format(npsa)
@@ -28,11 +28,13 @@ makeTableCePlane <- function(lambda, comparator, cache) {
   tabCePlane[7, ]  <- format(colMeans(incCost) /  colMeans(incBen), digits=2, nsmall=2)
   tabCePlane[8, ]  <- format(apply(incBen, 2, quantile, 0.025), digits=2, nsmall=2)
   tabCePlane[9, ]  <- format(apply(incBen, 2, quantile, 0.975), digits=2, nsmall=2)
-  tabCePlane[10, ]  <- format(apply(incCost, 2, quantile, 0.025), digits=2,  nsmall=2)
+  tabCePlane[10, ] <- format(apply(incCost, 2, quantile, 0.025), digits=2,  nsmall=2)
   tabCePlane[11, ] <- format(apply(incCost, 2, quantile, 0.975), digits=2, nsmall=2)
-  tabCePlane[12, ] <- format(apply(incCost, 2, function(x) sum(x < 0)) / npsa, digits=2, nsmall=2)
-  tabCePlane[13, ] <- format(apply(incBen, 2, function(x) sum(x > 0)) / npsa, digits=2, nsmall=2)
-  tabCePlane[14, ] <- format(apply(inb, 2, function(x) sum(x > 0)) / npsa, digits=2, nsmall=2)
+  tabCePlane[12, ] <- format(apply(inb, 2, quantile, 0.025), digits=2,  nsmall=2)
+  tabCePlane[13, ] <- format(apply(inb, 2, quantile, 0.975), digits=2, nsmall=2)
+  tabCePlane[14, ] <- format(apply(incCost, 2, function(x) sum(x < 0)) / npsa, digits=2, nsmall=2)
+  tabCePlane[15, ] <- format(apply(incBen, 2, function(x) sum(x > 0)) / npsa, digits=2, nsmall=2)
+  tabCePlane[16, ] <- format(apply(inb, 2, function(x) sum(x > 0)) / npsa, digits=2, nsmall=2)
 
   colnames(tabCePlane) <- colnames(cache$uploadedCosts)[-comp]
   tabCePlane

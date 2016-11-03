@@ -616,53 +616,6 @@ fluidPage(
 
 
 
-      ############
-      # PSUB TAB #
-      ############
-
-      tabPanel("P-SUBs",
-               h3("Payer Strategy and Uncertainty Burdens"),
-               p("The 'Payer Strategy Burden' (PSB) and 'Payer Uncertainty Burden' (PUB)
-                 reflect the payer's financial risks."),
-               p(HTML("The PSB for decision option <em>d</em> is the difference between the expected net benefit of the most
-                 cost-effective option, and the expected net benefit of decision option <em>d</em>.
-               The PSB indicates to the Payer the risk of choosing an option that is not the most cost-effective option.")),
-               p("The PUB is equal to the overall Expected Value of Perfect Information.
-                It indicates to the Payer the financial
-                 risk of making the decision with current evidence, relative to making the decision with perfect evidence."),
-               p(HTML("The concepts are explained in detail in this
-                <a href = 'http://www.nicedsu.org.uk/Managed-Entry-Agreements-MEA(3026860).htm'
-               target='_blank'>NICE Decision Support Unit Report</a>.")),
-               br(),
-               h4("Table showing Payer Strategy and Uncertainty Burdens, relative to the most cost-effective option"),
-               tableOutput("tablePSUB"),
-               h4("Download table as a csv file"),
-               downloadButton('downloadTablePSUB', 'Download table'),
-
-               br(),
-               br(),
-               h4("Stacked barchart showing Payer Strategy and Uncertainty Burdens,
-                    relative to the most cost-effective option"),
-               plotOutput("plotsPSUBstacked", width="700px", height="600px"),
-               br(),
-               br(),
-               h4("Side-by-side barchart showing Payer Strategy and Uncertainty Burdens,
-                    relative to the most cost-effective option"),
-               plotOutput("plotsPSUBsideBySide", width="700px", height="600px"),
-               br()
-
-      ),
-
-
-
-
-
-
-
-
-
-
-
 
 
       ###############################
@@ -770,6 +723,56 @@ fluidPage(
 
       # Numerical summary of the dataset,
       # coming from the function output$summary in server.R
+
+
+
+
+
+
+
+
+
+
+
+      ############
+      # PSUB TAB #
+      ############
+
+      tabPanel("Risk Analysis",
+               h3("The Payer Strategy and Uncertainty Burdens"),
+               p("The 'Payer Strategy Burden' (PSB) and 'Payer Uncertainty Burden' (PUB)
+                       reflect the payer's financial risks."),
+               p(HTML("The PSB for decision option <em>d</em> is the difference
+                between the expected net benefit of the most
+                cost-effective option, and the expected net benefit of decision option <em>d</em>.
+                The PSB indicates to the Payer the risk of choosing an option
+                      that is not the most cost-effective option.")),
+               p("The PUB is equal to the overall Expected Value of Perfect Information.
+                      It indicates to the Payer the financial
+                       risk of making the decision with current evidence,
+                 relative to making the decision with perfect evidence."),
+               p(HTML("The concepts are explained in detail in this
+                      <a href = 'http://www.nicedsu.org.uk/Managed-Entry-Agreements-MEA(3026860).htm'
+                     target='_blank'>NICE Decision Support Unit Report</a>.")),
+               br(),
+               h4("Table showing Payer Strategy and Uncertainty Burdens, relative to the most cost-effective option"),
+               tableOutput("tablePSUB"),
+               h4("Download table as a csv file"),
+               downloadButton('downloadTablePSUB', 'Download table'),
+
+               br(),
+               br(),
+               h4("Stacked barchart showing Payer Strategy and Uncertainty Burdens,
+                          relative to the most cost-effective option"),
+               plotOutput("plotsPSUBstacked", width="700px", height="600px"),
+               br(),
+               br(),
+               h4("Side-by-side barchart showing Payer Strategy and Uncertainty Burdens,
+                          relative to the most cost-effective option"),
+               plotOutput("plotsPSUBsideBySide", width="700px", height="600px"),
+               br()
+
+      ),
 
 
 

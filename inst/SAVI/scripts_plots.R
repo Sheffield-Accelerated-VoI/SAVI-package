@@ -238,6 +238,28 @@ make4wayEvpiPlot <- function(costs.int, effects.int, lambda, prevalence, horizon
 
 
 
+
+
+
+###############################
+# EVPPI SINGLE PARAMETERS TAB #
+###############################
+
+
+makeEvppiBar <- function(pEVPI.int, params) {
+  EVPPI <- matrix(pEVPI.int[order(pEVPI.int)], ncol = length(pEVPI.int), nrow = 1)
+  colnames(EVPPI) <- colnames(params[order(pEVPI.int)])
+  op <- par(mar = c(5, 15, 4, 2) + 0.1, pty = "m")
+  barplot(EVPPI, horiz = TRUE, cex.names=0.7, las=1, main= "Single parameter Partial EVPI per person",
+          xlab = "Partial EVPI per person", cex.main=0.9)
+  par(op)
+}
+
+
+
+
+
+
 ############
 # PSUB TAB #
 ############
@@ -257,31 +279,15 @@ makePSUBplot <- function(costs.int, effects.int, lambda, benUnit, beside) {
 
   ylimMax <- ceiling(max(psubsHealth)) * lambda # max(psubs) * 1.2
   colnames(dataForBarplot) <- names(costs.int)
-  x <- barplot(dataForBarplot, col = c(4, 2), ylim = c(0, ylimMax), ylab = "£", beside = beside)
+
+  psubCols <- c("#4F81BD", "#C0504D")
+  x <- barplot(dataForBarplot, col = psubCols, ylim = c(0, ylimMax), ylab = "£", beside = beside)
   if (beside) {
     text(x, as.vector(dataForBarplot) + ylimMax / 20, healthUnitsLabelsBeside, cex = 0.9)
   } else {
     text(x, psubs + ylimMax / 20, healthUnitsLabelsStack, cex = 1.1)
   }
-  legend("topright", col = c(2, 4), pch=15, c("PSB", "PUB"))
+  legend("topright", col = rev(psubCols), pch=15, c("PSB", "PUB"))
 }
 
 
-
-
-
-
-
-###############################
-# EVPPI SINGLE PARAMETERS TAB #
-###############################
-
-
-makeEvppiBar <- function(pEVPI.int, params) {
-  EVPPI <- matrix(pEVPI.int[order(pEVPI.int)], ncol = length(pEVPI.int), nrow = 1)
-  colnames(EVPPI) <- colnames(params[order(pEVPI.int)])
-  op <- par(mar = c(5, 15, 4, 2) + 0.1, pty = "m")
-  barplot(EVPPI, horiz = TRUE, cex.names=0.7, las=1, main= "Single parameter Partial EVPI per person",
-          xlab = "Partial EVPI per person", cex.main=0.9)
-  par(op)
-}
