@@ -10,9 +10,9 @@
 
 # This function estimates EVPI and SE via GAM
 # S is the simulation size for the Monte Carlo computation of SE
-gamFunc <- function(NB, sets, s=1000, cache, session) {
+gamFunc <- function(NB, sets, s = 1000, cache, session) {
   
-  if(!is.null(dim(NB))) {
+  if (!is.null(dim(NB))) {
     NB <- NB - NB[, 1]
   } else {
     NB <- cbind(0, NB)
@@ -24,48 +24,53 @@ gamFunc <- function(NB, sets, s=1000, cache, session) {
   g.hat[[1]] <- 0
   
   input.parameters <- cache$params
-  paramSet <- cbind(cbind(input.parameters)[, sets, drop=FALSE])
+  paramSet <- cbind(cbind(input.parameters)[, sets, drop = FALSE])
   
   constantParams <- (apply(paramSet, 2, var) == 0)
 
-  if (sum(constantParams) == length(sets)) return(list(EVPI=0, SE=0)) # if all regressors are constant
+  if (sum(constantParams) == length(sets)) return(list(EVPI = 0, SE = 0)) # if all regressors are constant
   if (sum(constantParams) > 0) sets <- sets[-which(constantParams)] # remove constants
   
   # check for linear dependence and remove 
-  paramSet <- cbind(cbind(input.parameters)[, sets, drop=FALSE]) # now with constants removed
-  rankifremoved <- sapply(1:NCOL(paramSet), function (x) qr(paramSet[,-x])$rank)
-  while(length(unique(rankifremoved)) > 1) {
+  paramSet <- cbind(cbind(input.parameters)[, sets, drop = FALSE]) # now with constants removed
+  rankifremoved <- sapply(1:NCOL(paramSet), function(x) qr(paramSet[,-x])$rank)
+  while (length(unique(rankifremoved)) > 1) {
     linearCombs <- which(rankifremoved == max(rankifremoved))
     # print(linearCombs)
     print(paste("Linear dependence: removing column", colnames(paramSet)[max(linearCombs)]))
-    paramSet <- cbind(paramSet[, -max(linearCombs), drop=FALSE])
+    paramSet <- cbind(paramSet[, -max(linearCombs), drop = FALSE])
     sets <- sets[-max(linearCombs)]
-    rankifremoved <- sapply(1:NCOL(paramSet), function (x) qr(paramSet[,-x])$rank)
+    rankifremoved <- sapply(1:NCOL(paramSet), function(x) qr(paramSet[,-x])$rank)
   }
-  while(qr(paramSet)$rank == rankifremoved[1]) { # special case only lincomb left
+  while (qr(paramSet)$rank == rankifremoved[1]) { # special case only lincomb left
     print(paste("Linear dependence: removing column", colnames(paramSet)[1]))
-    paramSet <- cbind(paramSet[, -1, drop=FALSE]) 
+    paramSet <- cbind(paramSet[, -1, drop = FALSE]) 
     sets <- sets[-1]
-    rankifremoved <- sapply(1:NCOL(paramSet), function (x) qr(paramSet[,-x])$rank)
+    rankifremoved <- sapply(1:NCOL(paramSet), function(x) qr(paramSet[,-x])$rank)
   }
   
   regression.model <- formulaGenerator(colnames(input.parameters)[sets])
   
   
-  progress <- shiny::Progress$new(session, min=1, max=D-1)
+  progress <- shiny::Progress$new(session, min = 1, max = D - 1)
   on.exit(progress$close())
   progress$set(message = 'Calculating conditional expected net benefits',
                detail = 'Please wait...')
   
-  for(d in 2:D) {
-    progress$set(value = d-1)
+  for (d in 2:D) {
+    progress$set(value = d - 1)
     print(paste("estimating g.hat for incremental NB for option", d ,"versus 1"))
     dependent <- NB[, d]
     f <- update(formula(dependent~.), formula(paste(".~", regression.model)))
-    model <- gam(f, data=data.frame(input.parameters)) 
+    try_model <- try(model <- gam(f, data = data.frame(input.parameters))) 
+    if (inherits(try_model, "try-error")) {
+      regression.model <- formulaGenerator_s(colnames(input.parameters)[sets])
+      f <- update(formula(dependent~.), formula(paste(".~", regression.model)))
+      model <- gam(f, data = data.frame(input.parameters))
+    }
     g.hat[[d]] <- model$fitted
     beta.hat[[d]] <- model$coef
-    Xstar[[d]] <- predict(model,type="lpmatrix")
+    Xstar[[d]] <- predict(model, type = "lpmatrix")
     V[[d]] <- model$Vp
   }
   
@@ -75,12 +80,12 @@ gamFunc <- function(NB, sets, s=1000, cache, session) {
   rm(g.hat); gc()
   
   print("computing standard error via Monte Carlo")
-  for(d in 2:D) {
+  for (d in 2:D) {
     sampled.coef <- mvrnorm(s, beta.hat[[d]], V[[d]])
-    tilde.g[[d]] <- sampled.coef%*%t(Xstar[[d]])  
+    tilde.g[[d]] <- sampled.coef %*% t(Xstar[[d]])  
   }
   
-  tilde.g[[1]] <- matrix(0, nrow=s, ncol=N)
+  tilde.g[[1]] <- matrix(0, nrow = s, ncol = N)
   rm(V, beta.hat, Xstar, sampled.coef);gc()
   
   sampled.perfect.info <- rowMeans(do.call(pmax, tilde.g))
@@ -90,21 +95,37 @@ gamFunc <- function(NB, sets, s=1000, cache, session) {
   SE <- sd(sampled.partial.evpi)
   #upward.bias <- mean(sampled.partial.evpi) - partial.evpi
   
-  return(list(EVPI=partial.evpi, SE=SE)) #,upward.bias=upward.bias))
+  return(list(EVPI = partial.evpi, SE = SE)) #,upward.bias=upward.bias))
   
 }
 
 # This function generates the GAM model formulas from the list of parameter names
 
 formulaGenerator <- function(namesList) {
-  form <- paste(namesList, ",", sep="", collapse="")
+  form <- paste(namesList, ",", sep = "", collapse = "")
   form <- substr(form, 1, nchar(form) - 1)
   if (length(namesList) == 4) {
-    form <- paste("te(", form, ",k=4)", sep="") # restrict to 4 knots if 4 params
+    form <- paste("te(", form, ", k = 4)", sep = "") # restrict to 4 knots if 4 params
   } else {
-    form <- paste("te(", form, ")", sep="")    
+    form <- paste("te(", form, ")", sep = "")    
   }
   form
+}
+
+formulaGenerator_s <- function(namesList) {
+  form <- paste0(namesList, ",", collapse = "")
+  form <- substr(form, 1, nchar(form) - 1)
+  if (length(namesList) == 4) {
+    form <- paste0("te(", form, ", k = 4)") # restrict to 4 knots if 4 params
+    return(form)
+  }
+  if (length(namesList) == 1) {
+    form <- paste0("s(", form, ")") # if single GAM and try error
+    print(form)
+    return(form)
+  }
+  form <- paste0("te(", form, ")")    
+  return(form)
 }
 
 
@@ -124,7 +145,7 @@ calculateSEforGAM <- function(gam.obj, N=1000) {
   ##	SE: the standard error
   ########################################################################
   
-  Xp <- predict(gam.obj, type="lpmatrix", unconditional = TRUE)
+  Xp <- predict(gam.obj, type = "lpmatrix", unconditional = TRUE)
   mu <- coef(gam.obj)
   V <- gam.obj$Vp
   
@@ -132,9 +153,9 @@ calculateSEforGAM <- function(gam.obj, N=1000) {
   
   samp <- mvrnorm(N, mu, V)
   
-  random.mu <- samp%*%t(Xp)
+  random.mu <- samp %*% t(Xp)
   
-  sample.set <- matrix(pmax(0, random.mu), nrow=N)
+  sample.set <- matrix(pmax(0, random.mu), nrow = N)
   evppi.samples <- rowMeans(sample.set)
   
   rm(sample.set); gc()
@@ -144,7 +165,7 @@ calculateSEforGAM <- function(gam.obj, N=1000) {
   
   SE <- sd(evppi)
   
-  return(SE=SE)
+  return(SE = SE)
 }
 
 

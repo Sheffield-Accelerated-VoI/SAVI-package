@@ -15,11 +15,11 @@ fluidPage(
   ###########
 
   tags$head(
-    tags$style("body {background-color: #F8F8F8; }")),
-  tags$style(type='text/css', '#textCheckTab {color: red;}'),
-  tags$style(type='text/css', '#textCheckTabParams {color: red;}'),
-  tags$style(type='text/css', '#textCheckTabCosts {color: red;}'),
-  tags$style(type='text/css', '#textCheckTabEffects {color: red;}'),
+   tags$style("body {background-color: #FFFFFF; }")),
+   tags$style(type = 'text/css', '#textCheckTab {color: red;}'),
+   tags$style(type = 'text/css', '#textCheckTabParams {color: red;}'),
+   tags$style(type = 'text/css', '#textCheckTabCosts {color: red;}'),
+   tags$style(type = 'text/css', '#textCheckTabEffects {color: red;}'),
 
 
 
@@ -30,14 +30,22 @@ fluidPage(
 
 
   # uni is #F1F2F2
-  headerPanel(HTML("<a href='http://www.sheffield.ac.uk/'
-                    target='_blank'><img src = 'uni2.gif' width = '200'
-                   alt='University of Sheffield logo' /></a>
-                    SAVI - Sheffield Accelerated Value of Information")),
+  headerPanel(HTML("
+                   <a 
+                    href = 'http://www.sheffield.ac.uk/' 
+                    target = '_blank'>
+                    <img 
+                      src = 'uni.svg' 
+                      width = '180' 
+                      alt = 'University of Sheffield logo' 
+                      style = 'padding-right: 20px; float: left;'
+                    />
+                  </a>  
+                  SAVI - Sheffield Accelerated Value of Information")),
 
   mainPanel(
-    h4("SAVI package version 2.1.1 (2016-11-03)"),
-    h6(HTML("Copyright &copy; 2015, 2016 University of Sheffield")),
+    h4("SAVI package version 2.2.1 (2025-02-14)"),
+    h6(HTML("Copyright &copy; 2015-2025 The Authors")),
 
 
 
@@ -51,6 +59,10 @@ fluidPage(
       tabPanel("Home",
         sidebarLayout(position = "right",
           sidebarPanel(
+            h3("Contact Us"),
+            p(HTML("For any queries or to report a bug please send an email to "), 
+              a("savi@sheffield.ac.uk", href = 'mailto:savi@sheffield.ac.uk')),               
+            br(),
             #h3("Returning Users"),
             #h3('Load previously saved session'),
             #p("The \"Load previously saved session\" facility is temporarily out
@@ -58,24 +70,27 @@ fluidPage(
             #  with SAVI version 1."),
             #fileInput('loadSession', label = h4('Load previously saved session')),
             #br(),br(),
-            h3("Sign up for SAVI news and updates"),
-            p(HTML("Send a blank email to"),
-             a("savi@sheffield.ac.uk", href='mailto:savi@sheffield.ac.uk?Subject=Register')),
-            p("We won't share your email address with anyone."),
-            p("Also, you can now follow SAVI on Twitter. The SAVI team tweet regular updates and new features."),
-            p(HTML("<a href='https://twitter.com/SheffieldSAVI' class='twitter-follow-button' data-show-count
-              ='false' data-size='large'>Follow @SheffieldSAVI</a><script>!function(d,s,id)
-              {var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-              if(!d.getElementById(id)){js=d.createElement(s);
-              s.id=id;js.src=p+'://platform.twitter.com/widgets.js';
-              fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>")),
-            br(),
+            #h3("Sign up for SAVI news and updates"),
+            #p(HTML("Send a blank email to"),
+             #a("savi@sheffield.ac.uk", href = 'mailto:savi@sheffield.ac.uk?Subject=Register')),
+            #p("We won't share your email address with anyone."),
+            #p("Also, you can now follow SAVI on Twitter. The SAVI team tweet regular updates and new features."),
+            #p(HTML("<a href='https://twitter.com/SheffieldSAVI' class='twitter-follow-button' data-show-count
+            #  ='false' data-size='large'>Follow @SheffieldSAVI</a><script>!function(d,s,id)
+            #  {var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+            #  if(!d.getElementById(id)){js=d.createElement(s);
+            #  s.id=id;js.src=p+'://platform.twitter.com/widgets.js';
+            #  fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>")),
+            #br(),
 
             h3("New features and bug fixes"),
+            strong("Fix for version 2.2.1"),
+            p("We have fixed a bug that caused the labels on the single parameter partial EVPI barchart to be unreadable when the number of parameters was large."), 
+            p("We have applied a patch to avoid numerical problems in the regression estimation if parameters are very highly skewed"), 
+            p("We have fixed a bug in the 'Download Summary Report' function that caused an incorrect plot of overall EVPI against the threshold value."), 
             strong("New in version 2.1.0"),
-            p(HTML("SAVI now has a 'P-SUBs' tab, which generates statistics and figures in line with this
-              <a href = 'http://www.nicedsu.org.uk/Managed-Entry-Agreements-MEA(3026860).htm'
-               target='_blank'>NICE Decision Support Unit Report</a>.")),
+            p(HTML("We have added a new 'Risk Analysis' tab. SAVI now generates Risk Analysis charts as described in "), a("this
+              paper by Grimm et al.", target = '_blank', href = "https://link.springer.com/article/10.1007%2Fs40273-017-0562-9")),
             strong("Fix for version 2.0.9"),
             p("We have added a note on the EVPPI Groups tab to say that the GP method for
               calculating partial EVPI for groups of five or more parameters uses only the first
@@ -83,7 +98,7 @@ fluidPage(
             strong("Fix for version 2.0.5"),
             p("We have found that, for individual level simulation models, the regression method works best
               when a small number of individuals (rather than a single individual) are run per PSA sample.
-              Instructions have been updated."),
+              Instructions have been updated. Note - the individual level simulation model feature is currently disabled."),
             strong("New in version 2.0.0"),
             p("SAVI now calculates value of information for individual level simulation
               models where only a single individual is simulated per PSA sample. See
@@ -172,7 +187,7 @@ fluidPage(
             br(),
             br(),
             p(HTML("Step 4: Download your results as .csv files.
-                   Download a report as a PDF, HTML or word document")),
+                   Download a report as an HTML or word document")),
               img(src = "step6_download.png", style = "width:50%"),
             br(),br(),
 
@@ -237,7 +252,7 @@ fluidPage(
            h3("Specify details about your model here"),
            h5("These can changed at any time - results will automatically update"),
            h5("Enter numeric values without a thousand separator comma, i.e. '15100', rather than '15,100'"),
-           textInput("modelName", label = h5(strong("Name of your model")), value ="Model name goes here"),
+           textInput("modelName", label = h5(strong("Name of your model")), value = "Model name goes here"),
            #textInput("current", label = h5("Name of strategy considered to be current/standard care"),
            #value ="Current Care"),
            #textInput("t3", label = h5("Names of other strategies"), value ="Intervention 1"),
@@ -246,9 +261,9 @@ fluidPage(
                      label = h5(strong("Threshold value of one unit of health effect (lambda)")),
                      value = 20000, min = 0, step = 1000),
            textInput("effectDef", label = h5(strong("Definition of effectiveness measure")),
-                     value ="Discounted Lifetime QALYs"),
+                     value = "Discounted Lifetime QALYs"),
            textInput("costDef", label = h5(strong("Definition of cost measure")),
-                     value ="Discounted Lifetime Costs (£)"),
+                     value = "Discounted Lifetime Costs (£)"),
            numericInput("annualPrev", label = h5(strong("Annual prevalence within jurisdiction
                      (number of patients affected by the decision each year)")),
                      value = 1000, min = 0, step = 10),
@@ -259,8 +274,8 @@ fluidPage(
            #(including current/standard care)"), value = 2, min = 2),
            #numericInput("nPeople",label = h5("If yes, how many individuals were run per PSA sample?"),
            #value = 0, min = 0, step = 100),
-           textInput("currency", label = h5(strong("Units used for costs")), value ="£"),
-           textInput("unitBens", label = h5(strong("Units used for benefits")), value ="QALY"),
+           textInput("currency", label = h5(strong("Units used for costs")), value = "£"),
+           textInput("unitBens", label = h5(strong("Units used for benefits")), value = "QALY"),
            textInput("jurisdiction", label = h5(strong("Name of jurisdiction (e.g. country, region, city)")),
                       value = "England")
        #    , width = 7)
@@ -324,13 +339,13 @@ fluidPage(
            #checkboxInput('header1', 'Is there a header row?', TRUE),
            #checkboxInput('rownames1', 'Does the first column contain row names?', FALSE),
            radioButtons('sep', h5('Separator:'),
-                        c(Comma=',',Semicolon=';',Tab='\t', Space=' '), ',', inline=TRUE),
+                        c(Comma = ',',Semicolon = ';',Tab = '\t', Space = ' '), ',', inline = TRUE),
            #radioButtons('quote', 'Quote:',
            #           c('None'='none', 'Double Quote'="\"'", 'Single Quote'="\''"),
            #           selected="\"'", inline=TRUE),
-           radioButtons('dec', h5('Decimal mark'), c(Dot='.', Comma=','), '.', inline=TRUE),
+           radioButtons('dec', h5('Decimal mark'), c(Dot = '.', Comma = ','), '.', inline = TRUE),
            fileInput('parameterFile', 'Choose CSV File',
-                     accept=c('text/csv')),
+                     accept = c('text/csv')),
            #br(),
            h4(textOutput("textCheckTabParams")),
 
@@ -340,13 +355,13 @@ fluidPage(
            #checkboxInput('header2', 'Is there a header row?', TRUE),
            #checkboxInput('rownames2', 'Does the first column contain row names?', FALSE),
            radioButtons('sep2', h5('Separator:'),
-                        c(Comma=',',Semicolon=';',Tab='\t', Space=' '), ',', inline=TRUE),
+                        c(Comma = ',',Semicolon = ';',Tab = '\t', Space = ' '), ',', inline = TRUE),
            #radioButtons('quote2', 'Quote:',
            #        c(None='','Double Quote'='"','Single Quote'="'"),
            #           '"', inline=TRUE),
-           radioButtons('dec2', h5('Decimal mark'), c(Dot='.', Comma=','), '.', inline=TRUE),
+           radioButtons('dec2', h5('Decimal mark'), c(Dot = '.', Comma = ','), '.', inline = TRUE),
            fileInput('costsFile', 'Choose CSV File',
-                     accept=c('text/csv')),
+                     accept = c('text/csv')),
            #br(),
            h4(textOutput("textCheckTabCosts")),
 
@@ -356,13 +371,13 @@ fluidPage(
            #checkboxInput('header3', 'Is there a header row?', TRUE),
            #checkboxInput('rownames3', 'Does the first column contain row names?', FALSE),
            radioButtons('sep3', h5('Separator:'),
-                        c(Comma=',',Semicolon=';',Tab='\t', Space=' '), ',', inline=TRUE),
+                        c(Comma = ',',Semicolon = ';',Tab = '\t', Space = ' '), ',', inline = TRUE),
            #radioButtons('quote3', 'Quote:',
            #          c(None='','Double Quote'='"','Single Quote'="'"),
            #          '"', inline=TRUE),
-           radioButtons('dec3', h5('Decimal mark'), c(Dot='.', Comma=','), '.', inline=TRUE),
+           radioButtons('dec3', h5('Decimal mark'), c(Dot = '.', Comma = ','), '.', inline = TRUE),
            fileInput('effectsFile', 'Choose CSV File',
-                     accept=c('text/csv')),
+                     accept = c('text/csv')),
            #h4("Are uploaded costs and effects incremental or absolute?"),
            #radioButtons('incremental', label="", c("Incremental" = "TRUE", "Absolute" = "FALSE"), "FALSE")
 
@@ -426,10 +441,10 @@ fluidPage(
                                 c(""),
                                 selected = NULL),
                    br()
-                   , width=5),
+                   , width = 5),
 
                  mainPanel(
-                   plotOutput("plots1", width="500px", height="500px"),
+                   plotOutput("plots1", width = "500px", height = "500px"),
                    br(),
                    p(strong("Strategies Compared"), textOutput("textCEplane4"))
                    , width = 7)
@@ -465,7 +480,7 @@ fluidPage(
                 Psychiatry (2005) 187: 106-108 doi: 10.1192/bjp.187.2.106"),
                br(),
 
-               plotOutput("plots2", width="500px", height="500px"),
+               plotOutput("plots2", width = "500px", height = "500px"),
                br(),
 
                h3("Net Benefit"),
@@ -494,11 +509,11 @@ fluidPage(
                textOutput("textNB3"),
                br(),
 
-               plotOutput("plots5a", width="500px", height="500px"),
+               plotOutput("plots5a", width = "500px", height = "500px"),
                br(),
 
                h1("Net Benefit Densities"),
-               plotOutput("plots5", width="700px", height="400px"),
+               plotOutput("plots5", width = "700px", height = "400px"),
                br(),
 
                p("Analysis of the expected incremental net benefit helps to visualise
@@ -567,14 +582,14 @@ fluidPage(
                br(),
 
                h4("Overall EVPI (on costs scale) versus lambda"),
-               plotOutput("plots3", width="500px", height="500px"),
+               plotOutput("plots3", width = "500px", height = "500px"),
 
                h4("Overall EVPI (on effects scale) versus lambda"),
-               plotOutput("plots4", width="500px", height="500px"),
+               plotOutput("plots4", width = "500px", height = "500px"),
                br(),
 
                h4("Overall EVPI per population and time horizon"),
-               plotOutput("plots6", width="700px", height="600px"),
+               plotOutput("plots6", width = "700px", height = "600px"),
 
                h4("Understanding the EVPI: a non-technical explanation"),
                br(),
@@ -642,7 +657,7 @@ fluidPage(
          #tableOutput("summary"),
 
          h3("Partial EVPI barplot for single parameters"),
-         plotOutput("plot7", width="500px", height="500px")
+         plotOutput("plot7", width = "500px", height = "500px")
 
       ),
 
@@ -694,7 +709,7 @@ fluidPage(
              #                    actionButton("addSelection", "Add selection"),
              #                    br(),
              #                    br(),
-             actionButton("calculateSubsetsEvpi", "Calculate EVPPI values"), width=5),
+             actionButton("calculateSubsetsEvpi", "Calculate EVPPI values"), width = 5),
 
            mainPanel(
              br(),
@@ -709,7 +724,7 @@ fluidPage(
              #tableOutput("selectedEvpiTable"),
              #   br(),
              #   actionButton("clearSubsetsEvpi", "Clear Selections"),
-             width=7)),
+             width = 7)),
          p("NOTES"),
          p(tags$ul(
            tags$li("Currently this table does not automatically
@@ -764,12 +779,12 @@ fluidPage(
                br(),
                h4("Stacked barchart showing Payer Strategy and Uncertainty Burdens,
                           relative to the most cost-effective option"),
-               plotOutput("plotsPSUBstacked", width="700px", height="600px"),
+               plotOutput("plotsPSUBstacked", width = "700px", height = "600px"),
                br(),
                br(),
                h4("Side-by-side barchart showing Payer Strategy and Uncertainty Burdens,
                           relative to the most cost-effective option"),
-               plotOutput("plotsPSUBsideBySide", width="700px", height="600px"),
+               plotOutput("plotsPSUBsideBySide", width = "700px", height = "600px"),
                br()
 
       ),
@@ -794,7 +809,7 @@ fluidPage(
                           p(),
                           h3(HTML("The report feature requires <strong>Pandoc</strong> to be installed.")),
                           p(HTML("You can download Pandoc from "),
-                             a("http://pandoc.org/", href='http://pandoc.org/', target='_blank')),
+                             a("http://pandoc.org/", href = 'http://pandoc.org/', target = '_blank')),
                           p("Windows users please restart your computer after installing Pandoc.")
           ),
 
@@ -830,14 +845,16 @@ fluidPage(
        p(HTML("It was written at the University of Sheffield's
               <a href = 'http://www.sheffield.ac.uk/scharr'
                 target='_blank'>School of Health and Related Research</a> by
-              <a href='https://www.shef.ac.uk/scharr/sections/ph/staff/profiles/mark'
+              <a href='https://www.sheffield.ac.uk/smph/mark-strong'
                 target='_blank'>Mark Strong</a>,
-              <a href='https://www.sheffield.ac.uk/scharr/sections/heds/staff/watson_p'
+              <a href='https://www.sheffield.ac.uk/smph/people/population-health/penny-breeze'
                 target='_blank'>Penny Breeze</a>,
-              <a href='https://www.sheffield.ac.uk/scharr/sections/heds/staff/thomas_c'
+              <a href='https://www.sheffield.ac.uk/smph/chloe-thomas'
                 target='_blank'>Chloe Thomas</a> and
-              <a href='https://www.sheffield.ac.uk/scharr/sections/heds/staff/brennan_a'
-                target='_blank'>Alan Brennan</a>.")),
+              <a href='https://www.sheffield.ac.uk/smph/people/population-health/alan-brennan'
+                target='_blank'>Alan Brennan</a> and 
+              <a href='http://www.imperial.ac.uk/people/christophe.stevens' 
+                target='_blank'>Christophe Stevens</a>.")), 
        p(HTML("The regression-based method for approximating partial EVPI was developed by
          <a href='https://www.shef.ac.uk/scharr/sections/ph/staff/profiles/mark'
           target='_blank'>Mark Strong</a>
@@ -872,9 +889,9 @@ fluidPage(
               ")),
 
        br(),
-       p(HTML("This website complies with The University of Sheffield's
-          <a href='http://www.sheffield.ac.uk/privacy' target='_blank'>Privacy
-         Policy</a>"))
+       p(HTML("<a href='http://www.nihr.ac.uk/' 
+                    target='_blank'><img src = 'NIHR-Logo.png' width = '200' 
+                   alt='Funded by National Institute for Health Research' /></a>"), align = "right")
       )
 
 
@@ -894,7 +911,7 @@ fluidPage(
     # FOOTER #
     ##########
 
-    tags$style(type="text/css", ".tab-content { overflow: visible; }",
+    tags$style(type = "text/css", ".tab-content { overflow: visible; }",
             "footer {background-color: #F8F8F8;
             width: 100%;
             bottom: 0;
@@ -902,6 +919,6 @@ fluidPage(
     , width = 12 # 12 is the max width of the mainPanel page
   )
   #,theme="bootstrap.css" # can style with bootstrap
-  , title="SAVI - Sheffield Accelerated Value of Information") # BROWSER WINDOW TITLE
+  , title = "SAVI - Sheffield Accelerated Value of Information") # BROWSER WINDOW TITLE
 
 #can add id="tabId", before type = "pills"

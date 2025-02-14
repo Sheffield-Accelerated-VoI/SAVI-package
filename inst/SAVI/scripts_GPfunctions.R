@@ -3,6 +3,12 @@
 
 # this file holds the functions to calculate the GP
 
+## NOTE
+## Bug fix 14th Feb 2025
+## There was a bug in the code for computing the upward bias of the GP derived EVPPI estimate
+## This would have had an unpredictable effect on the upward bias (including making it negative)
+
+
 dinvgamma <- function(x, alpha, beta) {
   (beta ^ alpha) / gamma(alpha) * x ^ (-alpha - 1) * exp(-beta / x)
 }
@@ -14,7 +20,7 @@ cor.Gaussian <- function(X, phi, m) { #  needs sorting...... probably with dist(
 
 makeA.Gaussian <- function(X, phi) { # function to make A matrix with the Gaussian correlation function
   n <- NROW(X)
-  if(length(phi) > 1) {
+  if (length(phi) > 1) {
     b <- diag(phi ^ (-2))
   } else {
     b <- phi ^ (-2) }
@@ -46,9 +52,9 @@ post.density <- function(hyperparams, NB, input.m) {
   T <- chol(Astar)
   y <- backsolve(t(T), NB, upper.tri = FALSE)
   x <- backsolve(t(T), H, upper.tri = FALSE)
-  tHAstarinvH <- t(x) %*% (x) + 1e-7* diag(q)
+  tHAstarinvH <- t(x) %*% (x) + 1e-7 * diag(q)
   betahat <- solve(tHAstarinvH) %*% t(x) %*% y
-  residSS <- y %*% y -t(y) %*% x %*% betahat - t(betahat) %*% t(x) %*% y +
+  residSS <- y %*% y - t(y) %*% x %*% betahat - t(betahat) %*% t(x) %*% y +
     t(betahat) %*% tHAstarinvH %*% betahat
   prior <- prod(dnorm(log(delta), 0, sqrt(1e5))) * dinvgamma(nu, a.nu, b.nu)
   l <- -sum(log(diag(T))) - 1 / 2 * log(det(tHAstarinvH)) -
@@ -65,21 +71,21 @@ estimate.hyperparameters <- function(NB, inputs, session) {
   hyperparameters <- vector("list", D)
   hyperparameters[[1]] <- NA
 
-  progress1 <- shiny::Progress$new(session, min=1, max=D)
+  progress1 <- shiny::Progress$new(session, min = 1, max = D)
   on.exit(progress1$close())
   progress1$set(message = 'Estimating GP hyperparameters',
                 detail = 'Please wait...')
   progress1$set(value = 1)
   
-  for(d in 2:D) {
+  for (d in 2:D) {
     progress1$set(value = d)
     initial.values <- rep(0, p + 1)
     repeat {
       print(paste("calling optim function for net benefit", d))
-      log.hyperparameters <- optim(initial.values, fn=post.density, 
-                                   NB=NB[, d], input.m=inputs,
-                                   method="Nelder-Mead",
-                                   control=list(fnscale=-1, maxit=10000, trace=0))$par
+      log.hyperparameters <- optim(initial.values, fn = post.density, 
+                                   NB = NB[, d], input.m = inputs,
+                                   method = "Nelder-Mead",
+                                   control = list(fnscale = -1, maxit = 10000, trace = 0))$par
       if (sum(abs(initial.values - log.hyperparameters)) < 0.05) {
         hyperparameters[[d]] <- exp(log.hyperparameters)
         break
@@ -99,13 +105,13 @@ gpFunc <- function(NB, sets, s=1000, cache, session) {
   constantParams <- (apply(paramSet, 2, var) == 0)
 
   #remove constants
-  if (sum(constantParams) == length(sets)) return(list(EVPI=0, SE=0)) # if all regressors are constant
+  if (sum(constantParams) == length(sets)) return(list(EVPI = 0, SE = 0)) # if all regressors are constant
   if (sum(constantParams) > 0) sets <- sets[-which(constantParams)] # remove constants
   
   # check for linear dependence and remove 
   paramSet <- cbind(cbind(input.parameters)[, sets]) # now with constants removed
-  rankifremoved <- sapply(1:NCOL(paramSet), function (x) qr(paramSet[, -x])$rank)
-  while(length(unique(rankifremoved)) > 1) {
+  rankifremoved <- sapply(1:NCOL(paramSet), function(x) qr(paramSet[, -x])$rank)
+  while (length(unique(rankifremoved)) > 1) {
     linearCombs <- which(rankifremoved == max(rankifremoved))
     # print(linearCombs)
     print(paste("Linear dependence: removing column", colnames(paramSet)[max(linearCombs)]))
@@ -113,7 +119,7 @@ gpFunc <- function(NB, sets, s=1000, cache, session) {
     sets <- sets[-max(linearCombs)]
     rankifremoved <- sapply(1:NCOL(paramSet), function(x) qr(paramSet[, -x])$rank)
   }  
-  if(qr(paramSet)$rank == rankifremoved[1]) {
+  if (qr(paramSet)$rank == rankifremoved[1]) {
     paramSet <- cbind(paramSet[, -1]) # special case only lincomb left
     sets <- sets[-1]
     print(paste("Linear dependence: removing column", colnames(paramSet)[1]))
@@ -122,17 +128,17 @@ gpFunc <- function(NB, sets, s=1000, cache, session) {
   inputs.of.interest <- sets
   p <- length(inputs.of.interest)
   
-  if(!is.null(dim(NB))) {
+  if (!is.null(dim(NB))) {
     NB <- NB - NB[, 1]
   } else {
     NB <- cbind(0, NB)
   }
   
-  maxSample <- min(5000, nrow(NB)) # to avoid trying to invert huge matrix
+  maxSample <- min(7500, nrow(NB)) # to avoid trying to invert huge matrix
   NB <- as.matrix(NB[1:maxSample, ])
   D <- ncol(NB)
   
-  input.matrix <- as.matrix(input.parameters[1:maxSample, inputs.of.interest, drop=FALSE])
+  input.matrix <- as.matrix(input.parameters[1:maxSample, inputs.of.interest, drop = FALSE])
   colmin <- apply(input.matrix, 2, min)
   colmax <- apply(input.matrix, 2, max)
   colrange <- colmax - colmin
@@ -155,29 +161,28 @@ gpFunc <- function(NB, sets, s=1000, cache, session) {
   g.hat[[1]] <- rep(0, N)
   
 
-  progress1 <- shiny::Progress$new(session, min=1, max=D)
+  progress1 <- shiny::Progress$new(session, min = 1, max = D)
   #on.exit(progress1$close())
   progress1$set(message = 'Calculating conditional expected net benefits',
                 detail = 'Please wait...')
   progress1$set(value = 1)
   
-  for(d in 2:D)
-  {
+  for (d in 2:D) {
     progress1$set(value = d)
     print(paste("estimating g.hat for incremental NB for option", d, "versus 1"))
     delta.hat <- hyperparameters[[d]][1:p]
-    nu.hat <- hyperparameters[[d]][p+1]
+    nu.hat <- hyperparameters[[d]][p + 1]
     A <- makeA.Gaussian(input.matrix, delta.hat)
     Astar <- A + nu.hat * diag(N)
     Astarinv <- chol2inv(chol(Astar))
     rm(Astar); gc()
     AstarinvY <- Astarinv %*% NB[, d]
     tHAstarinv <- t(H) %*% Astarinv
-    tHAHinv <- solve(tHAstarinv %*% H + 1e-7* diag(q))
+    tHAHinv <- solve(tHAstarinv %*% H + 1e-7 * diag(q))
     betahat <- tHAHinv %*% (tHAstarinv %*% NB[, d])
     Hbetahat <- H %*% betahat
     resid <- NB[, d] - Hbetahat
-    g.hat[[d]] <- Hbetahat+A %*% (Astarinv %*% resid)
+    g.hat[[d]] <- Hbetahat + A %*% (Astarinv %*% resid)
     AAstarinvH <- A %*% t(tHAstarinv)
     sigmasqhat <- as.numeric(t(resid) %*% Astarinv %*% resid)/(N - q - 2)
     V[[d]] <- sigmasqhat*(nu.hat * diag(N) - nu.hat ^ 2 * Astarinv +
@@ -192,9 +197,9 @@ gpFunc <- function(NB, sets, s=1000, cache, session) {
   
   print("Computing standard error via Monte Carlo")
   tilde.g <- vector("list", D)
-  tilde.g[[1]] <- matrix(0, nrow=s, ncol=N)     
+  tilde.g[[1]] <- matrix(0, nrow = s, ncol = min(N, 1000))   # bug fix 25.1.19       
   
-  progress2 <- shiny::Progress$new(session, min=1, max=D)
+  progress2 <- shiny::Progress$new(session, min = 1, max = D)
   #on.exit(progress2$close())
   progress2$set(message = 'Calculating Standard Error',
                 detail = 'Please wait...')

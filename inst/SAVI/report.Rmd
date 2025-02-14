@@ -22,7 +22,7 @@ In section 4 the results of single parameter Partial Expected Value of Perfect I
 ```{r, echo=FALSE, results='hide'}
 lambda <- lambdaOverall
 npsa <- nIterate
-if(!is.null(costs) | !is.null(effects)) {
+if (!is.null(costs) | !is.null(effects)) {
 nb <- effects * lambda - costs
 }
 ```
@@ -33,7 +33,7 @@ nb <- effects * lambda - costs
 
 ```{r set-options, echo=FALSE}
 options(width = 80)
-if(!is.null(tableCEplane)) kable(tableCEplane)
+if (!is.null(tableCEplane)) kable(tableCEplane)
 ```
 
 ## 2.2 Cost-Effectiveness Plane
@@ -77,31 +77,31 @@ This is particularly useful when comparing several strategies because the analys
 
 
 ```{r, echo=FALSE, results='asis'}
-if(!is.null(tableNetBenefit)) kable(tableNetBenefit)
+if (!is.null(tableNetBenefit)) kable(tableNetBenefit)
 ```
 
 ## 2.4.2 Incremental Net Benefit of compared with the optimal comparator
 The graph shows the incremental expected net benefit of the strategies compared with `r if(!is.null(costs) | !is.null(effects)) {colnames(costs[which.max(as.matrix(colMeans(nb)))])}`.  
 
 ```{r, echo=FALSE}
-if(!is.null(costs) | !is.null(effects)) {
-  lambda<-lambda
+if (!is.null(costs) | !is.null(effects)) {
+  lambda <- lambda
   c <- which.max(as.matrix(colMeans(nb)))
-  inbOpt <- nb-nb[,c]
+  inbOpt <- nb - nb[, c]
   means <- colMeans(inbOpt)
   sd <- apply(inbOpt, 2, sd)
   lCI <- apply(inbOpt, 2, quantile, 0.025)
   uCI <- apply(inbOpt, 2, quantile, 0.975)
   colnames(inbOpt) <- colnames(nb)
   mp <- barplot(means, 
-          main = paste("Expected Incremental Net Benefit vs. Optimal Strategy\nOptimal Strategy is",colnames(costs[c])), 
+          main = paste("Expected Incremental Net Benefit vs. Optimal Strategy\nOptimal Strategy is", colnames(costs[c])), 
           xlab = "Strategy", ylab = "INB vs. Optimal Strategy", ylim = c(min(lCI), max(uCI)),
-          col=0, border=0, names.arg = 1:length(lCI)) 
-  segments(mp - 0.2, means, mp + 0.2, means, lwd=2)
-  segments(mp, lCI, mp, uCI, lwd=2)
-  segments(mp - 0.1, lCI, mp + 0.1, lCI, lwd=2)
-  segments(mp - 0.1, uCI, mp + 0.1, uCI, lwd=2)
-  abline(h=0, lty=2)
+          col = 0, border = 0, names.arg = 1:length(lCI)) 
+  segments(mp - 0.2, means, mp + 0.2, means, lwd = 2)
+  segments(mp, lCI, mp, uCI, lwd = 2)
+  segments(mp - 0.1, lCI, mp + 0.1, lCI, lwd = 2)
+  segments(mp - 0.1, uCI, mp + 0.1, uCI, lwd = 2)
+  abline(h = 0, lty = 2)
   }
 
 ```
@@ -112,23 +112,23 @@ The absolute monetary net benefit density is calculated for each of the `r nInt`
 
 ```{r, echo=FALSE}
 if(!is.null(costs) | !is.null(effects)) {
-  lambda<-lambda
+  lambda <- lambda
   d <- ncol(costs) 
-  xmax<-max(nb) + 0.1 * (max(nb) - min(nb))
-  xmin<-min(nb) - 0.1 * (max(nb) - min(nb))
-  ymax<-c(1:d)
-  for (i in 1:d){
-    den<-density(nb[, i])
-    ymax[i]<-max(den$y)
+  xmax <- max(nb) + 0.1 * (max(nb) - min(nb))
+  xmin <- min(nb) - 0.1 * (max(nb) - min(nb))
+  ymax <- c(1:d)
+  for (i in 1:d) {
+    den <- density(nb[, i])
+    ymax[i] <- max(den$y)
   }
-  ymax<-max(ymax)
+  ymax <- max(ymax)
   plot(density(nb[, 1]), type = "l", col = 1, xlim = c(xmin, xmax), ylim = c(0, ymax), 
-       xlab="Net Benefit",main="Net Benefit Densities")
-  for (i in 2:d){
+       xlab = "Net Benefit", main = "Net Benefit Densities")
+  for (i in 2:d) {
     lines(density(nb[, i]), col = i, lty = i)
   }
   # Need strategy names adding
-  legend("topleft", colnames(nb), col=c(1:d), lty = 1:d, cex=0.7)
+  legend("topleft", colnames(nb), col = c(1:d), lty = 1:d, cex = 0.7)
   }
 ```
 
@@ -137,13 +137,13 @@ if(!is.null(costs) | !is.null(effects)) {
 Densities for the incremental net benefit of each strategy compared with `r if(!is.null(costs) | !is.null(effects)) {colnames(costs[which.max(as.matrix(colMeans(nb)))])}` (the strategy with maximum expected net benefit) are presented. In this graph it is possible compare strategy densities with correlation removed. It is possible to observe which strategies have simulated Net Benefit greater than the optimal strategy. If there are several strategies with overlapping densities, then several strategies are close in terms of their expected value to a decision maker, and given the relatively large decision uncertainty it might be valuable to consider further research to reduce uncertainty.  The value of reducing uncertainty to the decision maker by undertaking further research is the subject of the analyses using expected value of information calculations.  These calculations can consider all decision uncertainty (the overall expected value of perfect information (EVPI)) or for particular uncertain parameters within the PSA (expected value of perfect parameter information (EVPPI)). 
 
 ```{r, echo=FALSE}
-if(!is.null(costs) | !is.null(effects)) {
-  lambda<-lambda
+if (!is.null(costs) | !is.null(effects)) {
+  lambda <- lambda
   c <- which.max(as.matrix(colMeans(nb)))
   inbOpt <- nb - nb[,c]
   inbOpt <- as.matrix(inbOpt[, -c])
   colnames(inbOpt) <- colnames(nb)[-c]
-  d <- ncol(inbOpt) + ifelse(FALSE, 1, 0) # what does this ifelse do?
+  d <- ncol(inbOpt) # + ifelse(FALSE, 1, 0) # what does this ifelse do?
   xmax <- max(inbOpt) + 0.1 * (max(inbOpt) - min(inbOpt))
   xmin <- min(inbOpt) - 0.1 * (max(inbOpt) - min(inbOpt))
   ymax <- 1:d
@@ -153,16 +153,16 @@ if(!is.null(costs) | !is.null(effects)) {
   }
   ymax <- max(ymax)
   plot(density(inbOpt[, 1]), type = "l", col = 1, xlim = c(xmin, xmax), 
-       ylim = c(0, ymax), xlab="INB vs. Optimal Strategy",
+       ylim = c(0, ymax), xlab = "INB vs. Optimal Strategy",
        main = paste("Incremental Net Benefit Density\nOptimal Strategy is",colnames(costs[c])))
-  if (d>1) {
+  if (d > 1) {
     for (i in 2:d) {
       lines(density(inbOpt[, i]), col = i, lty = i)
     }    
   }
   # Need strategy names adding
-  legend("topleft", colnames(inbOpt), col=1:d, lty = 1:d, cex=0.7)
-  abline(v=0, lty=2)
+  legend("topleft", colnames(inbOpt), col = 1:d, lty = 1:d, cex = 0.7)
+  abline(v = 0, lty = 2)
   }
 ```
 
@@ -187,13 +187,13 @@ Research or data collection exercises costing more than this amount would not be
 The EVPI estimates in the table below quantifies the expected value to decision makers within the jurisdiction of removing all current decision uncertainty at a threshold of `r input$currency` `r format(lambda,digits=4)` per `r input$unitBens`.  This will enable comparison against previous analyses to provide an idea of the scale of decision uncertainty in this topic compared with other previous decisions. The EVPI estimate for varying willingness to pay thresholds are illustrated in the figures below. 
 
 ```{r, echo=FALSE, results='asis'}
-if(!is.null(tableEVPI)) kable(tableEVPI)
+if (!is.null(tableEVPI)) kable(tableEVPI)
 ```
 
 ```{r, echo=FALSE}
   ## makes the overall EVPI plot
 if(!is.null(costs) | !is.null(effects)) {
-  lambda.int<-lambda 
+  lambda.int <- lambda 
   l.seq <- seq(0, lambda * 10, lambda / 20)
   p <- c()
   for (lambda.int in l.seq) {
@@ -202,9 +202,9 @@ if(!is.null(costs) | !is.null(effects)) {
     evpi <- mean(do.call(pmax, inb.int)) - max(colMeans(inb.int))
     p <- c(p, evpi)
   }
-  plot(l.seq, p, type="l", main = paste("Overall EVPI per person ", input$currency), xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ", input$currency))
-  abline(v=lambda, lty=2)
-  points(lambda, p[which(l.seq == lambda)], pch=20, col="black")
+  plot(l.seq, p, type="l", main = paste("Overall EVPI per person (", input$currency, ")"), xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ", input$currency))
+  abline(v = lambda, lty = 2)
+  points(lambda, p[which(l.seq == lambda)], pch = 20, col = "black")
   #text(lambda, p[which(l.seq == lambda)], round(p[which(l.seq == lambda)],2), pos=1, offset=0.1)
   }
 ```
@@ -212,39 +212,37 @@ if(!is.null(costs) | !is.null(effects)) {
 ```{r, echo=FALSE}
   ## makes the overall EVPI plot
 if(!is.null(costs) | !is.null(effects)) {
-  lambda.int<-lambda 
+  lambda.int <- lambda 
   l.seq <- seq(0, lambda * 10, lambda / 20)
   p <- c()
   for (lambda.int in l.seq) {
-    inb.int <- as.matrix(effects) * lambda.int - as.matrix(costs)
-    inb.int <- inb.int - inb.int[, 1]
-    #inb.int
-    evpi <- (mean(pmax(inb.int[, 2], inb.int[, 1])) - max(colMeans(inb.int)))*annualPrev
+    inb.int <- data.frame(as.matrix(effects) * lambda.int - as.matrix(costs))
+
+    evpi <- (mean(do.call(pmax, inb.int)) - max(colMeans(inb.int)))
+    evpi <- evpi / lambda.int
     p <- c(p, evpi)
   }  
-  plot(l.seq, p, type="l", main = paste("Overall EVPI per annual prevalence ", input$currency), xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ", input$currency))
-  abline(v=lambda, lty=2)
-  points(lambda, p[which(l.seq == lambda)], pch=20, col="black")
+  plot(l.seq, p, type="l", main = paste0("Overall EVPI per person (", input$unitBens, ")"), xlab = "Threshold willingness to pay", ylab = paste0("Per-person EVPI (", input$unitBens, ")"))
+  abline(v = lambda, lty = 2)
+  points(lambda, p[which(l.seq == lambda)], pch = 20, col = "black")
   }
 ```
 
 ```{r, echo=FALSE}
   ## makes the overall EVPI plot
-if(!is.null(costs) | !is.null(effects)) {
-  lambda.int<-lambda 
+if (!is.null(costs) | !is.null(effects)) {
+  lambda.int <- lambda 
   l.seq <- seq(0, lambda * 10, lambda / 20)
   p <- c()
   for (lambda.int in l.seq) {
-    inb.int <- as.matrix(effects) * lambda.int - as.matrix(costs)
-    inb.int <- inb.int - inb.int[, 1]
-    #inb.int
-    evpi <- (mean(pmax(inb.int[, 2], inb.int[, 1])) - max(colMeans(inb.int))) * input$annualPrev
-    evpi <- evpi / lambda.int
+    inb.int <- data.frame(as.matrix(effects) * lambda.int - as.matrix(costs))
+    evpi <- (mean(do.call(pmax, inb.int)) - max(colMeans(inb.int))) * input$annualPrev* input$horizon
+   
     p <- c(p, evpi)
   }  
-  plot(l.seq, p, type="l", main = paste("Overall EVPI per annual prevalence ", input$unitBens), xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ", input$unitBens))
-  abline(v=lambda, lty=2)
-  points(lambda, p[which(l.seq == lambda)], pch=20, col="black")
+  plot(l.seq, p, type="l", main = paste0("Overall population EVPI (", input$currency, ")"), xlab = "Threshold willingness to pay", ylab = paste0("Overall population EVPI (", input$currency, ")"))
+  abline(v = lambda, lty = 2)
+  points(lambda, p[which(l.seq == lambda)], pch = 20, col = "black")
   }
 ```
 
@@ -253,15 +251,14 @@ if(!is.null(costs) | !is.null(effects)) {
   l.seq <- seq(0, lambda * 10, lambda / 20)
   p <- c()
   for (lambda.int in l.seq) {
-    inb.int <- as.matrix(effects) * lambda.int - as.matrix(costs)
-    inb.int <- inb.int - inb.int[, 1]
-    #inb.int
-    evpi <- (mean(pmax(inb.int[, 2], inb.int[, 1])) - max(colMeans(inb.int))) * input$annualPrev * input$horizon
-    p <- c(p, evpi)
+    inb.int <- data.frame(as.matrix(effects) * lambda.int - as.matrix(costs))
+    evpi <- (mean(do.call(pmax, inb.int)) - max(colMeans(inb.int))) * input$annualPrev * input$horizon
+     evpi <- evpi / lambda.int
+     p <- c(p, evpi)
   }  
-  plot(l.seq, p, type="l", main = paste("Overall EVPI over decision relevance ", input$currency), xlab = "Threshold willingness to pay", ylab = paste("Annual population EVPI ", input$currency))
-  abline(v=lambda, lty=2)
-  points(lambda, p[which(l.seq == lambda)], pch=20, col="black")
+  plot(l.seq, p, type="l", main = paste0("Overall population EVPI (", input$unitBens, ")"), xlab = "Threshold willingness to pay", ylab = paste0("Overall population EVPI (", input$unitBens, ")"))
+  abline(v = lambda, lty = 2)
+  points(lambda, p[which(l.seq == lambda)], pch = 20, col = "black")
   }
 ```
 
@@ -272,13 +269,18 @@ if(!is.null(costs) | !is.null(effects)) {
 if(!is.null(tableEVPPI)) kable(tableEVPPI)
 ```
 
-```{r, echo=FALSE}
-if(!is.null(pEVPI)) {
+```{r, echo=FALSE, fig.height = max(5, NROW(pEVPI) / 5), fig.width = 10}
+if (!is.null(pEVPI)) {
   ord <- order(pEVPI[, 1])
   EVPPI <- matrix(pEVPI[ord, 1], ncol = NROW(pEVPI), nrow = 1)
-  colnames(EVPPI) <- colnames(params[ord])
-  barplot(EVPPI, horiz = TRUE, cex.names=0.7, las=1, main= "Single parameter Partial EVPI per person", xlab = "Partial EVPI per person")  
-  }
+  colnames(EVPPI) <- colnames(params)[ord]
+  op <- par(mar = c(5, 8, 2, 1) + 0.1, pty = "m")
+  barplot(EVPPI, horiz = TRUE, cex.names = 0.8, las = 1, 
+          main = "Single parameter Partial EVPI per person", 
+          xlab = "Partial EVPI per person",
+          space = rep(0.3, NROW(pEVPI)), col = 2, xlim = c(0, max(pEVPI[, 1]) * 1.1))  
+  par(op)
+}
 ```
 
 ## 4.1 Group parameter EVPPI
@@ -288,7 +290,7 @@ Although EVPPI information about individual parameters is useful, often it is mo
 ```{r, echo=FALSE, results='asis'}
 if(!is.null(groupTable)) {
   numericContent <- unlist(groupTable[, -1])
-  numericContent <- matrix(numericContent, ncol=5)
+  numericContent <- matrix(numericContent, ncol = 5)
   rownames(numericContent) <- paste("Set", 1:NROW(numericContent))
   df <- data.frame(Parameters = unname(unlist(groupTable[, 1])), numericContent)
   kable(df, col.names = c("Parameters", "Per person EVPPI", "Approx Standard error", "Indexed to Overall EVPI", 

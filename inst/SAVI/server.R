@@ -41,7 +41,7 @@ source("scripts_GAMfunctions.R")
 source("scripts_plots.R")
 source("scripts_tables.R")
 source("scripts_text.R")
-source("scripts_GAMBasedIndivAvefunctions.R")
+# source("scripts_GAMBasedIndivAvefunctions.R")
 
 
 ###########################
@@ -65,6 +65,7 @@ shinyServer(
 
     ##################################################################################################
 
+    
     #####################################
     # CREATE NEW ENVIRONMENT 'cache'    #
     # Initialise cached variable values #
@@ -211,128 +212,147 @@ shinyServer(
     ####################
 
     ### Parameters
-
+    
     #  Function that imports parameters
     observe({
       inFile <- input$parameterFile
       if (is.null(inFile)) return(NULL)
-      dat <- read.csv(inFile$datapath, sep=input$sep, dec=input$dec, encoding = 'UTF-8')
-      cache$params <- dat
-      cache$nParams <- NCOL(dat)
-      cache$nIterate <- NROW(dat) # size of PSA
+      dat <- try(read.csv(inFile$datapath, sep=input$sep, dec=input$dec, encoding = 'UTF-8'), silent = TRUE)
+      if(inherits(dat, "try-error")) {
+        cache$params <- dat
+      } else {
+        cache$params <- dat
+        cache$nParams <- NCOL(dat)
+        cache$nIterate <- NROW(dat) # size of PSA
+      }
     })
-
+    
     # Function that checks sanity of parameter file
     output$textCheckTabParams <- renderText({
-      x1 <- input$parameterFile
+      x1 <- input$parameterFile     
       params <- cache$params
-      if (is.null(params)) return(NULL)
-
+      if (is.null(params)) return(NULL)    
+      
+      if (inherits(params, "try-error")) return("There is something wrong with the parameters csv file. Probably formatting. 
+                                                Please check and remove all formatting")
+      
       if (sum(is.na(params)) > 0) {
         return("There are missing values - please check data and reload")
       }
-
+      
       if (!prod(unlist(c(lapply(params, function(x) {class(x) == "numeric" | class(x) == "integer"}))))) {
         return("Not all columns are numeric - please check data and reload")
       }
-
+      
       if (sum(unlist(lapply(params, function(x) length(unique(x)) > 1 & length(unique(x)) < 5))) > 0) {
         return("One or more columns contains too few (<5) unique values for EVPPI analysis")
       }
       return(NULL)
     })
-
-
+    
+    
     ### Costs
-
-    #  Function that imports costs
+    
+    #  Function that imports costs    
     observe({
       inFile <- input$costsFile
       if (is.null(inFile)) return(NULL)
-      dat <- read.csv(inFile$datapath, sep=input$sep2, dec=input$dec2, encoding = 'UTF-8')
-      cache$uploadedCosts <- cache$costs <- dat
-      cache$namesDecisions <- paste(1:ncol(dat), ") ", colnames(dat), sep="") # defines the decision option names
-      cache$nInt <- NCOL(dat) # number of interventions
-
+      dat <- try(read.csv(inFile$datapath, sep=input$sep2, dec=input$dec2, encoding = 'UTF-8'), silent = TRUE)
+      if(inherits(dat, "try-error")) { 
+        cache$uploadedCosts <- dat
+      } else {
+        cache$uploadedCosts <- cache$costs <- dat
+        cache$namesDecisions <- paste(1:ncol(dat), ") ", colnames(dat), sep="") # defines the decision option names      
+        cache$nInt <- NCOL(dat) # number of interventions
+      }
     })
-
+    
     # Function that checks sanity of costs file
     output$textCheckTabCosts <- renderText({
-      x2 <- input$costsFile
-
+      x2 <- input$costsFile 
+      
       costs <- cache$uploadedCosts
-      if (is.null(costs)) return(NULL)
-
+      if (is.null(costs)) return(NULL)    
+      
+      if (inherits(costs, "try-error")) return("There is something wrong with the costs csv file. Probably formatting. 
+                                      Please check and remove all formatting")
+      
       if (sum(is.na(costs)) > 0) return("There are missing values - please check data and reload")
-
-      if (NCOL(costs) == 1) return("There must be at least two decision options.
-                                      If you have a single set of incremental
-                                   costs for a two-decision option problem,
+      
+      if (NCOL(costs) == 1) return("There must be at least two decision options. 
+                                      If you have a single set of incremental 
+                                   costs for a two-decision option problem, 
                                     either upload the absolute costs, or include a column of zeroes.")
-
+      
       if (!prod(unlist(c(lapply(costs, function(x) {class(x) == "numeric" | class(x) == "integer"}))))) {
-        return("Not all columns are numeric - please check data and reload")
+        return("Not all columns are numeric - please check data and reload") 
       }
-
+      
       return(NULL)
     })
-
-
+    
+    
     ### Effects
-
+    
     # Function that imports effects
     observe({
-      inFile <- input$effectsFile
+      inFile <- input$effectsFile      
       if (is.null(inFile)) return(NULL)
-
-      dat <- read.csv(inFile$datapath, sep=input$sep3, dec=input$dec3, encoding = 'UTF-8')
+      
+      dat <- try(read.csv(inFile$datapath, sep=input$sep3, dec=input$dec3, encoding = 'UTF-8'), silent = TRUE)
       cache$uploadedEffects <- cache$effects <- dat
     })
-
+    
     # Function that checks sanity of effects file
     output$textCheckTabEffects <- renderText({
-      x3 <- input$effectsFile
+      x3 <- input$effectsFile 
       effects <- cache$uploadedEffects
       if (is.null(effects)) return(NULL)
-
+      
+      if (inherits(effects, "try-error")) return("There is something wrong with the effects csv file. Probably formatting. 
+                                         Please check and remove all formatting")
+      
       if (sum(is.na(effects)) > 0) return("There are missing values - please check data and reload")
-
-      if (NCOL(effects) == 1) return("There must be at least two decision options.
-                                    If you have a single set of
-                                      incremental effects for a two-decision option problem,
+      
+      if (NCOL(effects) == 1) return("There must be at least two decision options. 
+                                    If you have a single set of 
+                                      incremental effects for a two-decision option problem, 
                                      either upload the absolute effects, or include a column of zeroes.")
-
+      
       if (!prod(unlist(c(lapply(effects, function(x) {class(x) == "numeric" | class(x) == "integer"}))))) {
         return("Not all columns are numeric - please check data and reload")
-      }
-
+      } 
+      
       return(NULL)
     })
-
+    
     # Function that checks that files have the right number of rows and columns
     output$textCheckTab <- renderText({
-      x1 <- input$parameterFile
-      x2 <- input$costsFile
-      x3 <- input$effectsFile
-
+      x1 <- input$parameterFile 
+      x2 <- input$costsFile 
+      x3 <- input$effectsFile 
+      
       if (!valuesImportedFLAG(cache, input)) return(NULL)
-
+      
       params <- cache$params
       costs <- cache$uploadedCosts
       effects <- cache$uploadedEffects
+      
+      if (inherits(params, "try-error") | inherits(costs, "try-error") | inherits(effects, "try-error")) return(NULL)
+      
       if(!((NROW(params) == NROW(costs)) & (NROW(effects) == NROW(costs)))) {
         return("Loaded files have different numbers of rows - please check data and reload")
-      }
-
+      } 
+      
       if(NCOL(effects) != NCOL(costs)) {
         return("Costs and effect have different numbers of columns - please check data and reload")
-      }
-
+      } 
+      
       return(NULL)
-
+      
     })
-
-
+    
+    
     ### DOWNLOAD TEST FILES
 
     # Download csv file
@@ -977,12 +997,12 @@ shinyServer(
       tableEVPPI[, 3] <- round(pEVPI[, 1] / overallEvpi , 2)
       tableEVPPI[, 4] <- signif(pEVPI[, 1] * input$annualPrev, 4)
       tableEVPPI[, 5] <- signif(pEVPI[, 1] * input$annualPrev * input$horizon, 4)
-      colnames(tableEVPPI) <- c(paste("Per Person EVPPI (", input$currency, ")", sep=""),
+      colnames(tableEVPPI) <- c(paste("Per Person EVPPI (", input$currency, ")", sep = ""),
                                 "Standard Error","Indexed to Overall EVPI = 1.00",
                                 paste("EVPPI for ", input$jurisdiction,
-                                      " Per Year (", input$currency, ")", sep=""),
+                                      " Per Year (", input$currency, ")", sep = ""),
                                 paste("EVPPI for ", input$jurisdiction, " over ",
-                                      input$horizon, " years (", input$currency, ")", sep=""))
+                                      input$horizon, " years (", input$currency, ")", sep = ""))
       rownames(tableEVPPI) <- colnames(cache$params)
       cache$tableEVPPI <- tableEVPPI
       tableEVPPI
@@ -1003,7 +1023,7 @@ shinyServer(
       if (!valuesImportedFLAG(cache, input)) return(NULL)
       dummy <- input$lambdaOverall
       makeEvppiBar(cache$pEVPI[, 1], cache$params)
-    })
+    }, height = function() NROW(cache$pEVPI) * 30)
 
 
 
@@ -1043,9 +1063,9 @@ shinyServer(
       x <- input$parameterFile
       y <- input$loadSession
       params <- cache$params
-      if (is.null(params)) return(NULL)
+      if (!valuesImportedFLAG(cache, input)) return(NULL)
       namesParams <- colnames(params)
-      namesParams <- paste(1:ncol(params), ") ", namesParams, sep="")
+      namesParams <- paste(1:ncol(params), ") ", namesParams, sep = "")
       updateCheckboxGroupInput(session, "pevpiParameters",
                                choices = namesParams)
     })
@@ -1060,8 +1080,8 @@ shinyServer(
       if (!valuesImportedFLAG(cache, input)) return(NULL)
       params <- cache$params
       if (is.null(params)) return(NULL)
-      paramNames <- paste(1:ncol(params), ") ", colnames(params), sep="")
-      currentSelection <- which(paramNames%in%currentSelectionNames)
+      paramNames <- paste(1:ncol(params), ") ", colnames(params), sep = "")
+      currentSelection <- which(paramNames %in% currentSelectionNames)
       cache$currentSelection <- currentSelection
     })
 
@@ -1110,17 +1130,17 @@ shinyServer(
       filename = "EVPPI\ for\ parameter\ groups.csv",
       content = function(file) {
         contents <- cache$groupTable
-        if(!is.null(contents)) {
+        if (!is.null(contents)) {
           contents[, 1] <- as.character(contents[, 1])
           print(contents <- as.matrix(contents))
           colnames(contents) <- c("Parameters",
-            paste("Per Person EVPPI (", cache$currency, ")", sep=""),
+            paste("Per Person EVPPI (", cache$currency, ")", sep = ""),
             "Standard Error",
             "Indexed to Overall EVPI",
             paste("EVPPI for ", cache$jurisdiction,
-              " Per Year (", cache$currency, ")", sep=""),
+              " Per Year (", cache$currency, ")", sep = ""),
             paste("EVPPI for ", cache$jurisdiction,
-              " over ", cache$horizon, " years (", cache$currency, ")", sep=""))
+              " over ", cache$horizon, " years (", cache$currency, ")", sep = ""))
         }
         write.csv(contents, file)
       },
