@@ -28,9 +28,8 @@ The SAVI report download feature requires Pandoc. Pandoc can be downloaded and i
  
 Pandoc is not essential for the rest of SAVI to work.
 
-################
+
 # Running SAVI #
-################
 
  
 Type the following two lines into the console:
