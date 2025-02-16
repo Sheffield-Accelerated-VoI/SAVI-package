@@ -15,7 +15,7 @@ In a matter of seconds from the SAVI online application you can generate:
 SAVI is an R Shiny application that runs within a web browser. 
 After loading the SAVI R package the SAVI shiny app can be launched using the command SAVI().
 
-An online version of the SAVI application is hosted at http://savi.shef.ac.uk/SAVI/.
+An online version of the SAVI application is hosted at https://savi.shef.ac.uk/SAVI/.
 
     
 ### Funding Acknowledgements
@@ -30,8 +30,7 @@ the National Institute for Health Research, or the Department of Health.
 
 ### Copyright and License
 
-Copyright (c) 2014, 2015 
-The University of Sheffield
+Copyright (c) 2014-2025 The Authors
 
 All rights reserved
 
